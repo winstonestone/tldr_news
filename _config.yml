@@ -1,0 +1,12 @@
+title: AI News Daily Briefings
+description: Daily AI/ML news summaries for developers
+theme: minima
+markdown: kramdown
+permalink: /:year/:month/:day/:title.html
+
+defaults:
+  - scope:
+      path: "_posts"
+      type: posts
+    values:
+      layout: post
