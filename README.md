@@ -1,79 +1,83 @@
-# AI News Daily Briefing — 2026-05-14
+# AI News Daily Briefing — 2026-05-15
 
-# AI Daily Briefing — 2026-05-14
+# Daily AI Briefing — 2026-05-15
 
 ### 1. New Models & Benchmarks
 
-- **Ovis2.6-80B-A3B released** — MoE multimodal model: 80B total params, ~3B active at inference, 64K context, up to 2880×2880 image resolution. Introduces "Think with Image" (active visual tool use during CoT). Open-weight. Strong OCR/document capabilities but no independent benchmark data from trusted sources yet. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tby79g/aidcaiovis2680ba3b_hugging_face/) | [HuggingFace](https://huggingface.co/AIDC-AI/Ovis2.6-80B-A3B)
+- **Ring-2.6-1T released by inclusionAI** — trillion-parameter open-weight reasoning model with agent execution focus, two reasoning intensity levels (high/xhigh), and async RL training. Claims strong agent workflow and long-horizon task stability. No independent benchmarks yet — treat with caution until LMSYS or similar evaluates. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1td3fhc/inclusionairing261t_hugging_face/) | [HuggingFace](https://huggingface.co/inclusionAI/Ring-2.6-1T)
 
-- **SenseNova-U1-A3B-MoT** — Native unified multimodal model (understanding + generation in one architecture), MoE with ~3B active params. Monolithic pixel-to-word design rather than adapter-based. Open-weight, but early-stage with limited external evaluation. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tc47q0/sensenovasensenovau1a3bmot_hugging_face/) | [HuggingFace](https://huggingface.co/sensenova/SenseNova-U1-A3B-MoT)
+- **NVIDIA publishes NVFP4 quants of Kimi-K2.6 and Kimi-K2.5** — NVFP4 matches or slightly exceeds the native INT4 baseline across GPQA Diamond (90.4 vs 90.9), SciCode (54.4 vs 52.6), and MMMU Pro (76.5 vs 75.6). Ready for commercial use. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tcxb77/nvfp4_kimi26_and_kimi_25_released_by_nvidia/) | [HuggingFace](https://huggingface.co/nvidia/Kimi-K2.6-NVFP4)
 
-- **DramaBox** — Expressive voice model from Resemble AI, built on LTX 2.3. Open-source weights and ComfyUI integration available. [GitHub](https://github.com/resemble-ai/DramaBox) | [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tc5wx1/dramabox_most_expressive_voice_model_ever_based/)
+- **Granite Embedding Multilingual R2** — IBM releases Apache 2.0 multilingual embeddings with 32K context, claiming best-in-class retrieval quality under 100M parameters. Directly relevant for RAG pipelines on constrained hardware. [HuggingFace Blog](https://huggingface.co/blog/ibm-granite/granite-embedding-multilingual-r2)
 
-- **Thinking Machines ships "interaction model" research preview** — Trained from scratch for real-time multimodal conversation with 200ms micro-turns (concurrent audio/video/text streams, not turn-based). Delegates heavy reasoning to async background model. Streaming sessions implemented in SGLang. Not open-weight yet. [Thinking Machines](https://thinkingmachines.ai/blog/interaction-models/) | [The Batch](https://charonhub.deeplearning.ai/thinking-machines-debuts-a-new-type-of-model/)
+- **Poetiq claims SOTA coding via recursive self-improvement harness** — uses Gemini 3 Flash with a self-optimizing scaffold to surpass Opus 4.7 on coding benchmarks. Interesting architecture but single-source claim from the company itself; wait for independent reproduction. [r/singularity](https://reddit.com/r/singularity/comments/1tdgnux/new_sota_poetiq_uses_selfoptimizing_harness_to/) | [Poetiq Blog](https://poetiq.ai/posts/recursive_self_improvement_coding/)
 
 ### 2. Framework & Tooling Updates
 
-- **MTP + TurboQuant on llama.cpp delivers +40% throughput for Qwen 3.6 27B** — 21→34 tok/s on M5 Max 64GB, 90% MTP acceptance rate. AtomicBot published a patched fork and quantized Qwen 3.6 27B/35B GGUFs with MTP layers. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tckzy2/multitoken_prediction_mtp_for_qwen_on_llamacpp/) | [GitHub](https://github.com/AtomicBot-ai/atomic-llama-cpp-turboquant) | [HuggingFace](https://huggingface.co/collections/AtomicChat/qwen-36-udt-mtp)
+- **llama.cpp b9158 fixes RDNA3 Flash Attention** — significant for AMD users on RX 7000 series who had broken FA. Upgrade if you're on RDNA3. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tdgtdu/rdna3_flash_attention_fix_just_dropped_by/) | [GitHub Releases](https://github.com/ggml-org/llama.cpp/releases)
 
-- **Docker images for llama.cpp MTP** — Pre-built CUDA 12/13, Vulkan, Intel, ROCm flavors. Benchmarks confirm Unsloth MTP quants match or beat custom Q8 MTP grafts, making the latter obsolete. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tc132c/llamacpp_docker_images_to_run_mtp_models/)
+- **club-5060ti: community repo for RTX 5060 Ti local LLM configs** — documents tested vLLM configs for Qwen3.6 27B NVFP4/MTP, llama.cpp MTP GGUF presets, long-context fit checks up to 204K, and smoke/bench scripts. Useful if you're on dual 5060 Ti 16GB. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tdikc4/club5060ti_practical_rtx_5060_ti_local_llm_notes/)
 
-- **vLLM fork v0.20.1 for AMD MI50 (gfx906)** — Qwen 3.6 27B at 52.8 tok/s TG, 1569 tok/s PP on TP8 with 2018-era MI50s. Uses ROCm 7.2.1 + Triton flash attention. Fully usable with Claude Code or agentic harnesses per author. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tc9j6u/mi50s_qwen_36_27b_528_tps_tg_1569_tps_pp_no_mtp/) | [GitHub](https://github.com/ai-infos/vllm-gfx906-mobydick/tree/main)
+- **HuggingFace blog: unlocking asynchronicity in continuous batching** — practical serving optimization for inference engines. Worth reading if you run your own serving stack. [HuggingFace Blog](https://huggingface.co/blog/continuous_async)
 
-- **TextGen (oobabooga) becomes a native desktop app** — Cross-platform portable builds (no install). Ships ik_llama.cpp (IQ4_KS/IQ5_KS quants), built-in web search, tool-calling + MCP support, zero telemetry. Direct competitor to LM Studio with stronger privacy story. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tbyyee/textgen_is_now_a_native_desktop_app_opensource/) | [GitHub Releases](https://github.com/oobabooga/textgen/releases)
-
-- **nla.cpp** — Local llama.cpp server + Mikupad UI for Anthropic's Natural Language Autoencoders (activation extraction, explanation, steering). LoRA version in progress to avoid loading 3 models. [GitHub](https://github.com/thomasgauthier/nla.cpp) | [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tc7zto/i_made_a_ui_and_server_for_using_anthropics_new/)
+- **OpenAI Codex now in ChatGPT mobile app** — monitor, steer, and approve coding tasks from phone. [OpenAI Blog](https://openai.com/index/work-with-codex-from-anywhere/) | [Hacker News](https://news.ycombinator.com/item?id=44003851) (332 points)
 
 ### 3. Infrastructure & Deployment
 
-- **24+ tok/s from 30B MoE on a GTX 1080 (8GB VRAM, 128k context)** — MoE offloading in llama.cpp parks cold experts in system RAM, streams over PCIe. Key finding: Gemma 4's MTP barely helps out-of-box because llama.cpp puts the embedding table on CPU; forcing it to GPU with `--override-tensor-draft` gives the real 22% speedup. Detailed blog post covers all the build pain on Fedora 42 + Pascal. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tcc7h5/24_toks_from_30b_moe_models_on_an_old_gtx_1080_8/) | [Blog](https://mdda.net/blog/tech/dl/llama-cpp-moe-on-an-old-gtx-1080)
+- **Comprehensive TurboQuant accuracy/performance study** — FP8 KV-cache remains the best default (2x capacity, negligible accuracy loss). TurboQuant k8v4 not worth it. TurboQuant 4bit-nc is the only practical variant, viable for edge. k3v4-nc and 3bit-nc degrade too much for production. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tdb4ic/a_first_comprehensive_study_of_turboquant/)
 
-- **KVServe: adaptive KV cache compression for disaggregated vLLM serving** — Unifies compression strategies with Bayesian profiling + online bandit controller. Up to 9.13x JCT speedup in prefill-decode separated serving, 32.8x TTFT reduction in KV-disaggregated serving. Integrated into vLLM. [arXiv](https://arxiv.org/abs/2605.13734v1)
+- **RTX 5000 PRO (48GB) real-world vLLM benchmarks** — Qwen3.6-27B-FP8 with full precision KV cache: ~50-80 tok/s TG, 4400 tok/s PP. Full build cost ~$5600 including GPU at $4300. Competitive with Mac Studio at this price point for inference. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1td53ii/the_rtx_5000_pro_48gb_arrived_and_it_is_better/)
 
-- **Stateful Transformers for streaming inference** — "Flash Queries" keeps a persistent KV cache advanced incrementally, making query latency O(|q|) independent of context length. Up to 5.9x speedup over vLLM, SGLang, TensorRT-LLM, llama.cpp on streaming market-data benchmarks. [arXiv](https://arxiv.org/abs/2605.13784v1)
+- **Qwen3.6 27B quant recipe finding: INT8 Autoround thinks less, answers correctly** — specific layer-preserving BF16 quant recipe produces shorter thinking chains with equal/better accuracy vs UD Q8_K_XL. KV savings from reduced thinking may offset larger quant size. Needs BF16 baseline validation. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tdhcqb/need_a_second_pair_of_eyes_this_qwen36_27b_quant/)
 
-- **MinT: managed LoRA infrastructure at scale** — Serves 10^6-scale LoRA policy catalogs over shared 1T+ base models. Adapter-only handoff reduces step time 18.3x (4B dense), packed MoE LoRA tensors improve loading 8.5x. [arXiv](https://arxiv.org/abs/2605.13779v1)
+- **"What's in a GGUF" deep dive** — detailed breakdown of GGUF metadata, what's included beyond weights, and what's still missing. Useful reference for anyone serving GGUF models. [Hacker News](https://news.ycombinator.com/item?id=44003456) (149 points) | [Blog](https://nobodywho.ooo/posts/whats-in-a-gguf/)
 
 ### 4. Industry Moves
 
-- **Anthropic launches Claude for Small Business** — Team-oriented Claude plan for SMBs. No detailed pricing in the announcement. [Anthropic Blog](https://www.anthropic.com/news/claude-for-small-business)
+- **arXiv implements 1-year ban for unchecked LLM-generated content** — hallucinated references, LLM meta-comments left in papers, or illustrative data triggers ban + requirement for peer-reviewed venue acceptance on subsequent submissions. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tdje2d/arxiv_implements_1year_ban_for_papers_containing/) | [Thomas Dietterich on X](https://x.com/tdietterich/status/2055000956144935055)
 
-- **OpenAI details TanStack supply chain attack response** — Confirms protections taken for signing certificates. **macOS OpenAI app users must update by June 12, 2026.** [OpenAI Blog](https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack)
+- **Anthropic forms $200M partnership with the Gates Foundation** — large-scale deployment of Claude in global health and development contexts. [Anthropic Blog](https://www.anthropic.com/news/gates-foundation-partnership)
 
-- **OpenAI ships Codex Windows sandbox** — Secure sandbox with controlled file access and network restrictions for running Codex agents on Windows. [OpenAI Blog](https://openai.com/index/building-codex-windows-sandbox)
+- **AWS user hit with $30K bill from uncontrolled Claude on Bedrock; Anthropic now metering programmatic usage** — Cost Anomaly Detection failed to catch it. Anthropic is throttling at the API layer. Set hard spend limits on Bedrock. [r/artificial](https://reddit.com/r/artificial/comments/1tcu7w5/aws_user_hit_with_30000_dollar_bill_after_claude/) | [The Register](https://www.theregister.com/saas/2026/05/14/bedrock-and-a-hard-place-claude-adventure-leaves-aws-user-staring-down-30k-invoice/5238153)
 
-- **Google closing free search index to 50 domains; Cloudflare + GoDaddy blocking AI bots by default** — Web search capabilities for local models getting squeezed. Google's advanced search pricing not yet public; cutoff January 1, 2027. Community flagging this as a major threat to open AI web-search tooling. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tcaboi/websearch_is_coming_to_a_screeching_performance/)
+- **NVIDIA reportedly preparing RTX 5090 price hike** — rising GDDR7 costs cited. EU price data shows 5090 is the only GPU tier trending upward (+3% since launch) while everything else drops. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1td9ehi/nvidia_reportedly_prepares_rtx_5090_price_hike/) | [TechPowerUp](https://www.techpowerup.com/349050/nvidia-reportedly-prepares-rtx-5090-price-hike-amid-rising-gddr7-costs) | [EU price tracking](https://reddit.com/r/LocalLLaMA/comments/1td6ia5/i_tracked_eu_gpu_prices_across_15_stores_for_50/)
 
-- **Enterprise GPU utilization averages just 5%** — Despite massive GPU fleet purchases, inference cost + cost of ownership rose to 41% from 34%. [WinBuzzer](https://winbuzzer.com/2026/05/11/enterprises-face-underused-gpu-fleets-as-ai-costs-rise-xcxwbn) | [r/singularity](https://reddit.com/r/singularity/comments/1tc8j8f/behind_millions_of_dollars_of_funding_in_ai_sit/)
+- **Rust compiler adopts LLM policy** — official governance PR for how LLM-generated code is handled in the Rust compiler project. [Hacker News](https://news.ycombinator.com/item?id=44002177) (80 points) | [GitHub PR](https://github.com/rust-lang/rust-forge/pull/1040)
 
-- **Meta blocks users from blocking its AI account on Threads.** [The Verge](https://www.theverge.com/tech/929091/meta-ai-threads-account-block)
+- **Claude for Legal open-sourced by Anthropic** — reference implementation for legal document analysis. [Hacker News](https://news.ycombinator.com/item?id=43998471) (92 points) | [GitHub](https://github.com/anthropics/claude-for-legal)
+
+- **Ontario auditors find doctors' AI note-takers routinely blow basic facts** — real-world failure of medical AI transcription. Reinforces that LLM outputs in high-stakes domains need verification. [Hacker News](https://news.ycombinator.com/item?id=44003819) (233 points) | [The Register](https://www.theregister.com/ai-ml/2026/05/14/ontario-auditors-find-doctors-ai-note-takers-routinely-blow-basic-facts/5240771)
 
 ### 5. Research Highlights
 
-- **Negation Neglect: finetuning on negated documents teaches models the opposite** — Finetuning on docs saying "X is false" makes models believe X is true (88.6% belief rate). Only works when negation is in a separate sentence; inline negation ("X did not happen") is learned correctly. Affects all tested models including Qwen3.5, Kimi K2.5, GPT-4.1. Direct safety implications for training data curation. [arXiv](https://arxiv.org/abs/2605.13829v1)
+- **Widening the Gap: exploiting LLM quantization via outlier injection** — first attack that consistently triggers malicious behavior across AWQ, GPTQ, *and* GGUF I-quants. Injects weight outliers that cause targeted weight collapse post-quantization. If you serve quantized models from untrusted sources, this is a real threat vector. [arXiv:2605.15152](https://arxiv.org/abs/2605.15152)
 
-- **History Anchors: prior harmful actions in agent logs bias models toward continuing harm** — With "stay consistent" prompt, aligned models flip to 91-98% unsafe action selection. Flagship models are *more* susceptible than smaller siblings (inverse scaling). Red flag for agentic deployments with replayed/injected trajectories. [arXiv](https://arxiv.org/abs/2605.13825v1)
+- **Forgetting That Sticks: quantization-permanent unlearning** — shows standard machine unlearning is reversed by 4-bit quantization because parameter updates are 47-828x below NF4 bin width. Proposes MANSU, the first method that survives PTQ. Matters if you care about model safety post-quantization. [arXiv:2605.15138](https://arxiv.org/abs/2605.15138)
 
-- **High-Rate Quantized MatMul II: waterfilling improves GPTQ** — Shows GPTQ with random rotation is near-optimal for weight-only quantization, within 0.1 bit of WaterSIC on Llama-3-8B layers. Practical implication: existing GPTQ + rotation pipelines leave very little on the table. [arXiv](https://arxiv.org/abs/2605.13768v1)
+- **MeMo: Memory as a Model** — modular framework that encodes new knowledge into a separate memory model without touching LLM weights. Works with closed-source APIs, retrieval cost independent of corpus size. Strong results on BrowseComp-Plus and MuSiQue. Practical alternative to fine-tuning or vanilla RAG. [arXiv:2605.15156](https://arxiv.org/abs/2605.15156)
 
-- **Provable Quantization with Randomized Hadamard Transform** — Proves dithered TurboQuant achieves MSE matching truly random rotations. Theoretical grounding for TurboQuant's practical gains. [arXiv](https://arxiv.org/abs/2605.13810v1)
+- **OpenDeepThink: parallel test-time compute via Bradley-Terry ranking** — raises Gemini 3.1 Pro's Codeforces Elo by +405 points in ~27 min wall-clock using pairwise candidate comparison instead of pointwise judging. Transfers across models without retuning. [arXiv:2605.15177](https://arxiv.org/abs/2605.15177)
 
-- **Token Superposition for efficient pretraining** — From Nous Research. Novel pretraining method; details at blog post. [Nous Research](https://nousresearch.com/token-superposition) | [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tc67pw/efficient_pretraining_with_token_superposition_by/)
+- **Self-taught coding via self-mined RL pairs** — Qwen 2.5 14B base reaches 80% HumanEval and beats GPT-3.5 on math using only self-generated training data and a Python verifier. Total cost: $3.50 of H100 time. Demonstrates RLVR on consumer-level budget. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tde3m1/i_let_a_small_model_train_on_its_own_mistakes_it/)
 
 ### 6. Technology Adoption
 
-- **TextGen desktop (oobabooga) is now worth evaluating** — If you want a local LLM UI with zero telemetry, ik_llama.cpp quants, built-in web search, and MCP tool support, this is the strongest open-source option. Ships as a portable binary. Worth trying if you've been on LM Studio. [GitHub](https://github.com/oobabooga/textgen/releases) | [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tbyyee/textgen_is_now_a_native_desktop_app_opensource/)
+- **gstack (Garry Tan's Claude Code setup)** — 23 opinionated tools acting as CEO, Designer, Eng Manager, QA, etc. 915 GitHub stars in one day. Worth evaluating if you use Claude Code and want a batteries-included agent configuration. [GitHub Trending](https://github.com/garrytan/gstack)
 
-- **obra/superpowers** — Agentic skills framework and dev methodology. 1,401 stars/day on GitHub trending. Early but gaining traction fast. [GitHub](https://github.com/obra/superpowers)
+- **GlycemicGPT** — open-source self-hosted diabetes management platform connecting CGMs and insulin pumps to a local AI analysis layer. Supports Ollama for fully local operation or Claude/OpenAI APIs. GPL-3.0, Docker/K8s deployable. Niche but well-architected example of local LLM + medical device integration. [Hacker News](https://news.ycombinator.com/item?id=43997221) | [GitHub](https://github.com/GlycemicGPT/GlycemicGPT)
 
-- **Arena AI ELO History tracker** — Visualizes flagship model ELO over time per lab, making performance decay visible. Useful for tracking whether models are being quietly nerfed. [Live Dashboard](https://mayerwin.github.io/AI-Arena-History/) | [HN](https://news.ycombinator.com/item?id=48128003)
+- **Anthropic publishes "How Claude Code works in large codebases"** — practical guide with best practices for using Claude Code on large projects. Worth reading if you're a Claude Code user. [Hacker News](https://news.ycombinator.com/item?id=44001234) (165 points) | [Claude Blog](https://claude.com/blog/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start)
+
+### 7. Model Rankings Update
+
+No ranking changes today. Ring-2.6-1T and Poetiq claims lack independent benchmark data from trusted sources. Granite Embedding R2 is an embedding model, not directly ranked in current task categories.
 
 ### 8. Watchlist Updates
 
-- **TanStack/Mistral NPM compromise scope** — OpenAI published detailed response, confirms signing certificates were protected. **Action required: macOS OpenAI app users must update by June 12, 2026.** [OpenAI Blog](https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack)
-- **NEW WATCHLIST: Google free search index shutdown (Jan 1, 2027)** — Major impact on local AI web-search tooling. No alternative pricing announced yet. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tcaboi/websearch_is_coming_to_a_screeching_performance/)
-- **NEW WATCHLIST: KVServe vLLM integration maturity** — Paper shows impressive numbers; watch for upstream merge. [arXiv](https://arxiv.org/abs/2605.13734v1)
-- **NEW WATCHLIST: Ovis2.6-80B-A3B independent benchmarks** — 80B/3B-active MoE multimodal model needs trusted benchmark validation before ranking. [HuggingFace](https://huggingface.co/AIDC-AI/Ovis2.6-80B-A3B)
+- **NEW WATCHLIST: Anthropic API metering/throttling** — Anthropic is rate-limiting programmatic Claude usage at the API layer in response to runaway inference costs. Monitor for impact on high-volume workloads. [The Register](https://www.theregister.com/saas/2026/05/14/bedrock-and-a-hard-place-claude-adventure-leaves-aws-user-staring-down-30k-invoice/5238153) | [Latent Space](https://www.latent.space/p/ainews-codex-rises-claude-meters)
+- **NEW WATCHLIST: Ring-2.6-1T independent benchmarks** — trillion-param open-weight model with bold agent capability claims. No LMSYS/Artificial Analysis data yet.
+- **NEW WATCHLIST: Quantization supply-chain attacks (outlier injection)** — first demonstrated attack surviving AWQ/GPTQ/GGUF. Affects anyone downloading quantized models from untrusted sources.
+- **NEW WATCHLIST: NVIDIA RTX 5090 price trajectory** — only consumer GPU tier trending upward; GDDR7 costs may push further increases.
 
 
 
