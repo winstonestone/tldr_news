@@ -1,83 +1,91 @@
-# AI News Daily Briefing — 2026-05-16
+# AI News Daily Briefing — 2026-05-17
 
-# AI Daily Briefing — 2026-05-16
+# AI Daily Briefing — 2026-05-17
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Intern-S2-Preview released** — 35B scientific multimodal model (continued pretraining from Qwen3.5) matching the trillion-scale Intern-S1-Pro on core scientific tasks. Open-weight. Includes MTP with KL loss and CoT compression for faster inference. First open-source model with crystal structure generation + strong general capabilities. [HuggingFace](https://huggingface.co/internlm/Intern-S2-Preview)
+- **Qwopus3.5-9B-Coder released** — Qwen3.5-9B fine-tuned for agentic coding and tool calling using "Trace Inversion" data augmentation. Targets the 8–16GB VRAM sweet spot. Community finetune, no independent benchmarks yet; treat claims with caution. Open-weight. [HuggingFace](https://huggingface.co/Jackrong/Qwopus3.5-9B-Coder-GGUF) · [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tfin40/jackrongqwopus359bcodergguf_hugging_face/)
 
-- **Qwen3.6-35B-A3B hits 24.6% on Terminal-Bench 2.0** via the little-coder scaffold, beating Gemini 2.5 Pro on Gemini CLI (19.6%) and Qwen3-Coder-480B (23.9%). Shows small MoE models can compete on hard agentic benchmarks with the right scaffolding. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1temio0/qwen3635ba3b_and_9b_are_officially_on_the_public/) · [Terminal-Bench Leaderboard](https://www.tbench.ai/leaderboard/terminal-bench/2.0) · [little-coder GitHub](https://github.com/itayinbarr/little-coder)
+- **DeepSeek V4 1M context: practical limits mapped** — Independent testing across production codebases shows solid recall under 150K tokens, degraded precision past 300K (approximate line numbers, architectural summaries instead of implementation detail), and 94% hallucination rate on unknown-answer tasks. Practical sweet spot: **150–250K tokens** for coding work. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tfhl0q/deepseek_v4s_1m_context_window_the_breaking_point/)
 
-- **Anthropic Mythos Preview surfaces in security research** — researchers used it to find a kernel-level macOS exploit on Apple M5 in 5 days. Separate benchmark shows Mythos got 18/41 n-day exploits vs GPT-5.5's 1/41; open-weight models scored 0. No public API yet. [x.com (exploit)](https://x.com/intcyberdigest/status/2055281844816384262) · [x.com (benchmark)](https://x.com/i/status/2055314585058693601)
-
-- **OpenAI ships GPT-Realtime-2** — speech-to-speech model with 5 configurable reasoning levels (1.12s to 2.33s first-audio latency), parallel tool calls, and tone control. Also: GPT-Realtime-Translate (70+ input → 13 output languages) and GPT-Realtime-Whisper for transcription. All via Realtime API. [The Batch](https://charonhub.deeplearning.ai/openai-challenges-speech-to-speech-leaders/)
-
-- **Cola-DLM (ByteDance)** — continuous latent diffusion language model combining a Text VAE with block-causal DiT prior via Flow Matching. Research-stage; Apache 2.0. Not practical for serving yet but architecturally novel. [HuggingFace](https://huggingface.co/ByteDance-Seed/Cola-DLM) · [arXiv](https://arxiv.org/abs/2605.06548)
+- **CAISI (NIST) evaluates DeepSeek V4 Pro** — Nathan Lambert's roundup notes CAISI's assessment concludes open models are lagging further behind the US frontier over time, not closing the gap. [Interconnects](https://www.interconnects.ai/p/latest-open-artifacts-21-open-model)
 
 ---
 
 ### 2. Framework & Tooling Updates
 
-- **Anthropic publishes `anthropics/skills` repo** — 689 GitHub stars on day one. Public repository of agent skills for Claude-based workflows. [GitHub](https://github.com/anthropics/skills)
+- **llama.cpp merges MTP (Multi-Token Prediction) support** — [PR #22673](https://github.com/ggml-org/llama.cpp/pull/22673) landed in master. This is the native speculative decoding path using Qwen3.6's built-in draft heads — no separate draft model needed. Requires `--parallel 1` and Unsloth's MTP-tagged GGUFs. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tes1wx/mtp_support_merged_into_llamacpp/)
 
-- **Anima being added to HuggingFace diffusers** — PR open for native support, which should unlock OneTrainer compatibility. Primarily relevant if you work with video/image generation pipelines. [GitHub PR](https://github.com/huggingface/diffusers/pull/13732)
+- **MTP benchmarks across hardware** — Community results are pouring in. The pattern: **generation speed jumps 85–136%, but prompt processing drops 12–42%**. Net wall-clock improvement depends heavily on workload shape:
+
+  | Hardware | Model | TG Speedup | PP Slowdown | Net Wall-Clock |
+  |----------|-------|-----------|-------------|----------------|
+  | RTX 3090 | Qwen3.6-27B Q4_K_M | +85% (27→50 t/s) | −42% | **41% faster** (39→23 min @ 85K ctx) |
+  | RTX 5090 | Qwen3.6-27B Q5_K_M | +112% | −12% | Faster overall |
+  | Strix Halo | Qwen3.6-27B Q8_0 | +136% (7.6→18 t/s) | −18% | **22% faster** (5-turn chat) |
+  | Strix Halo | Qwen3.6-35B-A3B Q8_0 | +25% | −15% | **~tied or slightly slower** |
+
+  Bottom line: MTP is a clear win for generation-heavy workloads on dense models. MoE models (35B-A3B) see less benefit because they're already fast at generation. [RTX 5090](https://reddit.com/r/LocalLLaMA/comments/1tfgxc8/testing_llamacpp_mtp_support_on_qwen36_rtx_5090/) · [RTX 3090](https://reddit.com/r/LocalLLaMA/comments/1tfilwx/llamacpp_mtp_with_qwen36_27b_on_headless_rtx_3090/) · [Strix Halo](https://reddit.com/r/LocalLLaMA/comments/1teypb8/strix_halo_llamacpp_mtp_benchmarks_27b_gets_much/)
+
+- **Qwen3.5-122B MTP on Strix Halo** — 20 t/s sustained at Q5, 17 t/s at Q6. Impressive for a 122B model on integrated graphics. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tf6qeb/qwen35122bq5mtp_qwen35122bq6mtp/)
+
+- **Zerostack 1.0** — Unix-inspired coding agent written in pure Rust. 392 points on HN. Worth evaluating if you want a lightweight, non-Python agent. [crates.io](https://crates.io/crates/zerostack/1.0.0)
+
+- **codegraph** — Pre-indexed code knowledge graph for Claude Code. Reduces token usage and tool calls by giving Claude a structural map of your codebase. 416 stars on day one. [GitHub](https://github.com/colbymchenry/codegraph)
 
 ---
 
 ### 3. Infrastructure & Deployment
 
-- **Orthrus: 7.8× tokens/forward on Qwen3-8B with frozen backbone** — injects a trainable diffusion attention head that projects 32 tokens in parallel; AR head verifies. Output distribution is provably identical. No external drafter, no separate KV cache, zero TTFT penalty. Acceptance length 11.7 vs EAGLE-3's 3.5. Weights available for Qwen3 1.7B/4B/8B. [arXiv](https://arxiv.org/abs/2605.12825) · [GitHub](https://github.com/chiennv2000/orthrus) · [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1te5xpu/orthrusqwen38b_up_to_78tokensforward_on_qwen38b/)
+- **Cross-hardware inference comparison (5070 vs 3090 vs Strix Halo)** — 55-run benchmark harness with controlled methodology. Key findings: RTX 5070 (12GB GDDR7) beats RTX 3090 on models that fit in 12GB thanks to bandwidth advantage. RTX 3090 wins decisively in the 14–31B band. Strix Halo Vulkan is slightly faster than ROCm on the same chip. Qwen3.6-27B Q4_K_M is the quant sweet spot on 3090 (Q2 buys only 14% speed over Q4). [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tf9iyk/ran_the_same_models_across_strix_halo_rtx_3090/)
 
-- **4×RTX 3090 vLLM v0.20.2 efficiency benchmarks** — running Qwen3.6-27B FP16 at TP=4. Sweet spot at 220W/GPU: 27 tok/s output, 220 tok/s prefill, 1.13 tok/joule. Going above 250W gives negligible throughput gain. Useful reference if you're building multi-3090 rigs. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1te9o18/finding_the_4x_3090_sweet_spot/)
-
-- **Luce Megakernel** — claims 1.8× speed over standard llama.cpp CUDA by avoiding CPU dispatches at layer boundaries (~100 kernel launches per token normally). Companion to DFlash/PFlash. Discussion suggests it's significant for power efficiency on multi-GPU setups but needs independent validation. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tecfxm/luce_megakernal_why_nobody_is_taking_about_this/)
-
-- **Microsoft Research: "LLMs Corrupt Your Documents When You Delegate"** — chained transformation-and-inversion tasks show models accumulate fidelity degradation over repeated edits. Clarification post: this is a diagnostic for delegation patterns, not a claim against using AI. Practically: add verification loops in long-horizon agentic workflows. [Microsoft Research Blog](https://www.microsoft.com/en-us/research/blog/further-notes-on-our-recent-research-on-ai-delegation-and-long-horizon-reliability/)
+- **ROCm still fragile for research** — RX 7900 XTX user reports NaN explosions on backward passes with custom flow-matching code, while nanoGPT trains fine. ROCm appears stable on well-known codebases but breaks on slightly uncommon architectures. Avoid for novel research workloads. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tedjwo/rocm_with_pytorch_and_pytorch_lightning_seems_to/)
 
 ---
 
 ### 4. Industry Moves
 
-- **China blocks Meta's $2.5B acquisition of Manus** — China's economic regulator killed the deal despite Manus having relocated to Singapore. Upends the "build in China, sell from Singapore" strategy for AI startups. [The Batch / AP News](https://charonhub.deeplearning.ai/china-nixes-meta-manus-tie-up/)
+- **OpenAI + Malta: ChatGPT Plus for all citizens** — First country to offer ChatGPT Plus free for a year, requiring completion of a University of Malta AI literacy course (not OpenAI-designed). Interesting policy experiment. [OpenAI Blog](https://openai.com/index/malta-chatgpt-plus-partnership/) · [r/singularity](https://reddit.com/r/singularity/comments/1tezctw/openai_and_malta_partner_to_bring_chatgpt_plus_to/)
 
-- **U.S. NIST announces pre-deployment AI model evaluation** — new multi-agency task force will assess national-security risks (cyber, bio, chemical) before release. Leading AI companies agreed to submit models. White House considering an executive order requiring pre-deployment approval. [The Batch](https://charonhub.deeplearning.ai/us-to-evaluate-upcoming-models/)
+- **Depthfirst claims its AI finds critical vulns that Anthropic Mythos missed, at 1/10th cost** — Startup says task-specific optimization lets it do for $1K what Mythos does for $10K. Claims include critical flaws affecting "the majority of people using the web." [Forbes](https://www.forbes.com/sites/thomasbrewster/2026/05/12/ai-finds-critical-vulnerabilities-that-anthropic-mythos-missed/)
 
-- **Databricks adopts GPT-5.5 for enterprise agent workflows** — set new SOTA on OfficeQA Pro benchmark. [OpenAI Blog](https://openai.com/index/databricks)
+- **Claude Mythos spotted on Google Vertex** — Screenshot shows Mythos model available in Vertex AI, suggesting imminent broader availability beyond Anthropic's direct API. [r/singularity](https://reddit.com/r/singularity/comments/1tf6ukh/claude_mythos_has_been_spotted_in_google_vertex/)
 
-- **ChatGPT adds personal finance with Plaid bank account integration** — Pro users in U.S. only. Securely connects financial accounts for AI-powered insights. [OpenAI Blog](https://openai.com/index/personal-finance-chatgpt) · [Hacker News](https://firethering.com/chatgpt-bank-account-plaid-openai/)
-
-- **Frontier AI has broken the open CTF format** — AI performance now dominates capture-the-flag competitions, forcing the competitive security community to rethink the format. [Hacker News](https://kabir.au/blog/the-ctf-scene-is-dead)
-
-- **Amazon workers under pressure to increase AI usage are making up tasks** — internal mandate backfiring. [Fast Company](https://www.fastcompany.com/91541586/amazon-workers-pressured-to-up-ai-use-extraneous-tasks)
+- **DeepSeek V4 steering vectors work** — Sean Goedecke reports that V4-Flash's architecture makes activation steering practical again, after it had become unreliable on heavily RLHF'd models. Useful for researchers doing interpretability or behavioral control. [seangoedecke.com](https://www.seangoedecke.com/steering-vectors/)
 
 ---
 
 ### 5. Research Highlights
 
-- **Orthrus: Diffusion-attention speculative decoding** — 7.8× TPF with frozen backbone, provably identical output. Eliminates the external drafter model entirely. Developer implication: if this gets vLLM/llama.cpp integration, it could meaningfully cut serving costs for Qwen3 models. [arXiv:2605.12825](https://arxiv.org/abs/2605.12825)
+- **Token Superposition Training (TST)** — Nous Research. 2.5× pre-training wall-clock reduction at 10B-A1B MoE scale (4,768 vs 12,311 B200-GPU-hours) with lower final loss, without changing architecture or optimizer. If validated independently, this meaningfully reduces the cost floor for training open models. [arXiv](https://arxiv.org/abs/2605.06546) · [Nous Research](https://nousresearch.com/token-superposition)
 
-- **Self-Guided Self-Play (SGS)** — solves the Conjecturer collapse problem in LLM self-play by having the model itself guide problem quality. A 7B model after 200 rounds of self-play solves more Lean4 theorems than a 671B model at pass@4. Developer implication: practical path to strong math/reasoning from small models without massive compute. [arXiv:2604.20209](https://arxiv.org/abs/2604.20209) · [GitHub](https://github.com/LukeBailey181/sgs)
+- **δ-mem: Efficient Online Memory for LLMs** — Proposes a memory mechanism for LLMs that operates online (streaming) rather than requiring full context. Relevant if you're building agents that need to maintain state across very long sessions. [arXiv](https://arxiv.org/abs/2605.12357)
 
-- **Architecture-aware scaling laws (Amazon/ICLR)** — two models with identical param counts can differ by 40% in inference throughput depending on hidden size and attention/MLP ratio. Provides a framework for optimizing architecture choices at fixed compute budgets. [Amazon Science](https://www.amazon.science/blog/making-llms-faster-without-sacrificing-accuracy)
+- **SANA-WM: 2.6B open-source world model** — NVIDIA Labs releases a 2.6B-parameter model that generates 1-minute 720p video. Small enough to run on consumer hardware. [NVIDIA Labs](https://nvlabs.github.io/Sana/WM/)
+
+- **LLM architecture trends: KV sharing, mHC, compressed attention** — Sebastian Raschka's deep dive covers the architectural tricks in Gemma 4, DeepSeek V4, ZAYA1-8B, and Laguna XS.2 that reduce KV-cache costs for long-context workloads. Worth reading if you care about why some models are more memory-efficient than others. [Ahead of AI](https://magazine.sebastianraschka.com/p/recent-developments-in-llm-architectures)
 
 ---
 
 ### 6. Technology Adoption
 
-- **Equibles: self-hosted MCP server for U.S. financial data** — serves SEC filings, 13F holdings, insider/congressional trades, FRED indicators, and more as MCP tools. No API keys, no cloud dependency. Worth evaluating if you're building financial agents with Claude Code or local models. [GitHub](https://github.com/daniel3303/Equibles)
+- **codegraph for Claude Code** — If you use Claude Code on large repos, this is worth trying immediately. It pre-indexes your codebase into a knowledge graph so Claude navigates with fewer tool calls and less token waste. 416 GitHub stars on day one signals strong early adoption. [GitHub](https://github.com/colbymchenry/codegraph)
 
-- **little-coder agentic scaffold** — lightweight orchestrator that pushed Qwen3.6-35B-A3B to 24.6% on Terminal-Bench 2.0, above much larger models. Worth evaluating if you run small local models for agentic coding tasks. [GitHub](https://github.com/itayinbarr/little-coder)
+- **Zerostack (Rust coding agent)** — A minimalist alternative to Python-based coding agents. Unix philosophy: small composable tools. At v1.0 with 392 HN points. Worth evaluating if you want fast startup and low overhead, but ecosystem is nascent. [crates.io](https://crates.io/crates/zerostack/1.0.0)
+
+- **OpenClaw name history** — Simon Willison traces OpenClaw's lineage (Warelay → CLAWDIS → CLAWDBOT → Clawdbot → Moltbot → OpenClaw) ahead of his PyCon US lightning talk. No functional updates, just context on the project's evolution. [Simon Willison](https://simonwillison.net/2026/May/16/openclaw-names/#atom-everything)
 
 ---
 
 ### 8. Watchlist Updates
 
-- No updates on existing watchlist items today.
-- **NEW WATCHLIST: Anthropic Mythos Preview** — demonstrated extraordinary cybersecurity capability (18/41 n-day exploits vs 1/41 for GPT-5.5). No public API yet. Watch for general availability and pricing.
-- **NEW WATCHLIST: Orthrus vLLM/llama.cpp integration** — 7.8× speedup with identical output is compelling, but currently Qwen3-only with custom inference code. Integration into mainstream serving frameworks would be the unlock.
-- **NEW WATCHLIST: U.S. pre-deployment AI model evaluation mandate** — could slow frontier model releases if executive order materializes.
+- **Anthropic Mythos Preview** — Now spotted on Google Vertex AI, suggesting rollout to cloud partners is underway. Depthfirst claims to find critical vulns Mythos missed at 10% of the cost. Mythos is moving from "preview" toward general availability. [r/singularity](https://reddit.com/r/singularity/comments/1tf6ukh/claude_mythos_has_been_spotted_in_google_vertex/) · [Forbes](https://www.forbes.com/sites/thomasbrewster/2026/05/12/ai-finds-critical-vulnerabilities-that-anthropic-mythos-missed/)
+
+- **Orthrus vLLM/llama.cpp integration** — llama.cpp now has native MTP support (PR #22673 merged), which is a related but distinct speculative decoding approach. No Orthrus-specific integration yet. MTP uses the model's own draft heads rather than Orthrus's diffusion-attention approach.
+
+- **NEW WATCHLIST: llama.cpp MTP production readiness** — MTP is merged but requires `--parallel 1` (no concurrent requests) and has significant PP regressions. Watch for parallel support and PP optimization in coming builds.
 
 
 
