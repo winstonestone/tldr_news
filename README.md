@@ -1,98 +1,61 @@
-# AI News Daily Briefing — 2026-05-18
+# AI News Daily Briefing — 2026-05-19
 
-# Daily AI Briefing — 2026-05-18
+# AI Daily Briefing — May 19, 2026
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Gemma-4-Gembrain-31B-it-uncensored-heretic released** — community merge of multiple Gemma 4 31B finetunes targeting creative prose and reduced refusals (13/100). Open-weight, available in safetensors and GGUF. Niche creative-writing model, not a general-purpose upgrade. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tg7s7j/gemma4gembrain31bituncensoredheretic_is_out_now_a/) | [HuggingFace](https://huggingface.co/llmfan46/Gemma-4-Gembrain-31B-it-uncensored-heretic)
-
-- **Google I/O 2026 is tomorrow (May 19)** — Gemini 4, Android 17, and possibly new AI glasses expected to be announced. Worth watching for model releases and API changes. [Towards AI](https://pub.towardsai.net/google-i-o-2026-everything-google-is-about-to-announce-on-may-19-df54edefe634?source=rss----98111c9905da---4)
-
-- **Cerebras CFO confirms GPT-5.4 and GPT-5.5 running internally on Cerebras chips** — public access "coming soon." If true, Cerebras-speed inference on frontier models would be significant. [r/singularity](https://reddit.com/r/singularity/comments/1tftg9h/cerebras_cfo_says_they_are_currently_running/) | [CNBC](https://www.cnbc.com/video/2026/05/14/the-years-largest-ipo-acerebras-joins-the-hottest-trade-in-ai.html)
-
----
+- **Gemini 3.5 confirmed by Google DeepMind employee** — spotted ahead of Google I/O today. No specs yet. [r/singularity](https://reddit.com/r/singularity/comments/1thg4n1/gemini_35_confirmed_by_google_deepmind_employee/)
+- **Gemini 3.2 Flash solves IMO 2025 P6** — previously only GPT-5.5-Pro could solve this without scaffolding. Strong signal for reasoning capability in a Flash-tier model. [r/singularity](https://reddit.com/r/singularity/comments/1tgn8qt/gemini_32_flash_is_capable_of_solving_imo_2025_p6/)
+- **Qwen 3.7 spotted on the Qwen website** — no details, just a placeholder. Expect imminent release given community hype. [r/singularity](https://reddit.com/r/singularity/comments/1tgpwdh/qwen_37_has_been_spotted_on_the_qwen_website/), [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgrpqc/qwen_cant_wait_to_release_37_models/)
+- **Lance by ByteDance** — 3B param Apache-2.0 unified model for image/video understanding, generation, and editing. Uses dual-stream MoE architecture. Worth watching for lightweight multimodal pipelines. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tgjrm2/lance_by_bytedance_3b_apache2_model_for_image_and/), [arXiv](https://arxiv.org/abs/2605.18678v1)
 
 ### 2. Framework & Tooling Updates
 
-- **llama.cpp b9200 released — fixes MTP memory traffic overhead** — avoids copying full logits during prompt decode in MTP, directly improving prompt processing speed. Combined with tuned MTP flags (`--spec-draft-n-max 3`, `--parallel 1`, drop `--spec-draft-p-min`), agent workflows on a single RTX 3090 with Qwen3.6-27B jumped from ~7-8 t/s to significantly better throughput and draft acceptance rates. [PR #23198](https://reddit.com/r/LocalLLaMA/comments/1tft1il/llama_avoid_copying_logits_during_prompt_decode/) | [b9200 benchmarks](https://reddit.com/r/LocalLLaMA/comments/1tg6j9u/benchmarking_the_new_b9200_update_optimizing_qwen/)
-
-- **llama.cpp dual-GPU tensor parallelism now works with quantized KV caches** — community fork fixes `--split-mode tensor` to support q8_0 KV caches. On 3060+4070 Super (24GB combined), Qwen3.6-27B-Q4_K_M gets 30 t/s generation (up from 21 t/s without tensor split) and 545 t/s prompt processing. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tflngz/dual_gpu_llamacpp_speedup/) | [GitHub fork](https://github.com/RedToasty/llama.cpp_qts)
-
-- **ROCm 7.13 tech preview released with Strix Halo optimizations** — new optimizations specifically for Ryzen AI Max 300 "Strix Halo" APUs, plus ROCprof Trace Decoder is now open-source. Available via TheRock on GitHub. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tftg09/rocm_713_nightly_adds_strix_halo_optimizations/) | [Phoronix](https://www.phoronix.com/news/ROCm-7.13-Released) | [Release notes](https://rocm.docs.amd.com/en/7.13.0-preview/about/release-notes.html)
-
-- **Semble: code search MCP server using 98% fewer tokens than grep** — combines static embeddings (potion-code-16M) with BM25, runs on CPU. 0.854 NDCG@10 (99% of a 137M transformer), ~250ms indexing, ~1.5ms per query. Drop-in for Claude Code, Cursor, Codex, OpenCode. Install: `claude mcp add semble -s user -- uvx --from "semble[mcp]" semble`. [Hacker News](https://github.com/MinishLab/semble)
-
----
+- **ik_llama.cpp beats upstream llama.cpp for Qwen3.6 27B on RTX 3090** — 72.9 tok/s decode vs ~59.5 tok/s upstream, with 156k context, q8 KV, MTP, all in 24GB VRAM. The `IQ4_KS` quant + `--merge-qkv --merge-up-gate-experts` flags are the key. Best single-3090 setup tested. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgis7s/qwen_36_27b_on_24gb_vram_setup_backend/)
+- **Quantizing MTP draft KV cache is free lunch** — `-cache-type-k-draft q8_0 -cache-type-v-draft q8_0` saves VRAM with zero quality loss (identical accept rates). Most people don't know this flag exists. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgk9y6/quantizing_mtp_kv_cache_free_lunch/)
+- **Lemonade v10.5.1** — one-command MTP + ROCm 7.13 setup for Strix Halo, plus Fedora 43 fix. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th0z6k/lemonade_v1051_an_mtp_rocm_713_quick_start_for/), [GitHub](https://github.com/lemonade-sdk/lemonade)
 
 ### 3. Infrastructure & Deployment
 
-- **vLLM dominates mixed-GPU pipeline parallelism** — on a 7-GPU Blackwell/Ada cluster (RTX PRO 6000 + PRO 5000 + 5090s + modded 4090s), vLLM outperformed llama.cpp by 4-6x on long-context prefill. SGLang nearly matched vLLM on pure Blackwell but **crashes when mixing Ada cards** (no FP4 software fallback). vLLM handles uneven GPU splits seamlessly via `VLLM_PP_LAYER_PARTITION`. MiniMax-M2.7 at 82k tokens: vLLM 6,212 t/s vs llama.cpp 1,065 t/s on 6 mixed GPUs. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tg4mw0/benchmarking_vllm_vs_sglang_vs_llamacpp_on_a/)
-
-- **M5 Mac vs DGX Spark vs Strix Halo vs RTX 6000 — standardized benchmarks published** — maxed M5 aggressively outperforms DGX Spark (2x+ memory bandwidth: ~600 vs ~256 GB/s). RTX 6000 (~1,800 GB/s) still leads on raw tok/s. EVO X2 has thermal issues on extended runs; M5 MacBook holds at ~80°C but sounds like a "blow dryer." More backends being added. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tfzsd6/m5_vs_dgx_spark_vs_strix_halo_vs_rtx_6000/)
-
-- **Apple silicon costs more per-token than OpenRouter** — analysis confirms local inference on Apple hardware is currently more expensive, unless you factor in privacy, hardware reuse, or the risk that OpenRouter providers are burning investor cash on subsidized pricing (which won't last). [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tg0y2h/apple_silicon_costs_more_than_openrouter_an/)
-
----
+- **Modal cuts inference cold starts by 40x** — combines LP (lazy provisioning), FUSE filesystem, checkpoint/restore, and CUDA-checkpoint to achieve near-instant GPU cold starts for serverless inference. Directly relevant if you serve models on Modal or similar platforms. [Hacker News](https://modal.com/blog/truly-serverless-gpus)
+- **RTX 3090 power limits matter more than expected** — re-benchmarking 26 models at 200W vs 450W showed +70% to +113% throughput on dense 27-32B models. If you're running multi-GPU rigs on limited circuits, you're leaving massive performance on the table. [calebcoffie.com](https://calebcoffie.com/blog/how-much-do-power-limits-affect-llm-benchmark-tok-s)
 
 ### 4. Industry Moves
 
-- **Claude overtakes ChatGPT in business adoption for the first time** — Anthropic's annualized revenue crossed $30B (up from ~$9B end of 2025), surpassing OpenAI's ~$24-25B. 8 of Fortune 10 are Claude customers. More U.S. businesses paid for Claude than ChatGPT in April 2026. [r/artificial](https://reddit.com/r/artificial/comments/1tg1at4/for_the_first_time_in_years_chatgpt_falls_to/) 
-
-- **EU AI Act full enforcement starts August 2, 2026 (75 days)** — applies to any team serving EU clients regardless of company location. High-risk systems (credit scoring, recruitment, healthcare triage) need decision logging, 6-month retention, bias testing docs. Fines up to €35M or 7% global turnover. [r/artificial](https://reddit.com/r/artificial/comments/1tgf0gm/eu_ai_act_enforcement_starts_in_75_days_affects/)
-
-- **Uber struggling with Anthropic AI costs despite $3.4B spend** — CTO cites budget challenges scaling Claude across the organization. A cautionary signal on enterprise AI cost control. [r/singularity](https://reddit.com/r/singularity/comments/1tg4l4l/ubers_anthropic_ai_push_hits_a_wallcto_says/) | [Yahoo Finance](https://finance.yahoo.com/sectors/technology/articles/ubers-anthropic-ai-push-hits-223109852.html)
-
-- **GPT-5.5 autonomously ran 150+ hours improving protein folding models** — notable demonstration of long-horizon autonomous research by a frontier model. [r/singularity](https://reddit.com/r/singularity/comments/1tg7w59/gpt55_autonomously_spent_150_hours_improving/)
-
-- **Florida enacts data center restrictions** — new law shields residents from water and energy costs driven by data center expansion. Could affect AI infrastructure buildout in the state. [r/singularity](https://reddit.com/r/singularity/comments/1tfc48i/florida_law_enacts_data_center_restrictions_to/) | [Substack](https://centralflorida.substack.com/i/197170843/desantis-enacts-data-center-restrictions-to-shield-residents-from-water-energy-costs)
-
----
+- **Anthropic acquires Stainless** — Stainless builds the auto-generated typed SDKs (Python, TypeScript, Go, etc.) that Anthropic, OpenAI, and others use for their APIs. This brings SDK generation in-house for Anthropic. Could affect third-party SDK quality for other providers long-term. [Anthropic Blog](https://www.anthropic.com/news/anthropic-acquires-stainless)
+- **OpenAI + Dell: Codex goes on-premise** — enterprise partnership to bring Codex to hybrid and on-prem environments. Targets regulated industries that can't send code to external APIs. [OpenAI Blog](https://openai.com/index/dell-codex-enterprise-partnership)
+- **Musk loses OpenAI lawsuit** — federal jury dismissed all claims, ruling he filed too late. This is now settled. [TechCrunch](https://techcrunch.com/2026/05/18/elon-musk-has-lost-his-lawsuit-against-sam-altman-and-openai/), [CNBC](https://www.cnbc.com/2026/05/18/musk-altman-openai-trial-verdict.html)
+- **Hugging Face revives PapersWithCode** — new site at paperswithcode.co with AI-parsed leaderboards, trending papers by GitHub stars, citation counts, and harness reports for coding benchmarks like Terminal Bench. Meta's original site is no longer maintained. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tgmwqr/reviving_paperswithcode_by_hugging_face_p/)
+- **314 npm packages compromised (Mini Shai-Hulud)** — supply chain attack. Check your dependencies. [Hacker News](https://safedep.io/mini-shai-hulud-strikes-again-314-npm-packages-compromised/)
+- **RAM prices may drop in 2027 H2** — CXMT (Chinese memory maker) had 1,688% profit surge, expanding to 300k+ wafers/month, investing in HBM and DDR5. Good news for local inference long-term. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th3r5q/memory_expert_suspects_ram_price_drop_in_2027h2/), [wccftech](https://wccftech.com/ex-samsung-chip-boss-says-chinas-dram-blitz-could-crush-the-414-ddr5-price-spike-within-a-year/)
+- **Cloudflare publishes honest review of Anthropic Mythos Preview** — confirms the model chains exploit primitives like a senior researcher, but guardrails are inconsistent: same task framed differently produces different outcomes. [r/artificial](https://reddit.com/r/artificial/comments/1tgy0j4/cloudflare_just_published_what_they_found_after/)
+- **Schiff proposes bill requiring data centers to pay for own power** — would shift energy costs currently subsidized by ratepayers. [r/singularity](https://reddit.com/r/singularity/comments/1tgsqd9/schiff_proposes_bill_requiring_data_centers_to/), [Bloomberg Government](https://news.bgov.com/bloomberg-government-news/schiff-proposes-bill-requiring-data-centers-to-pay-for-own-power)
+- **Kilo Code data: Chinese models dominate token volume** — Step 3.5 Flash, MiniMax M2.5, and Ling-2.6-1T account for ~58% of Kilo Code's OpenRouter token usage. Price-driven, not necessarily quality-driven. [r/artificial](https://reddit.com/r/artificial/comments/1tgpqaa/tools_is_this_a_technical_victory_or_a_price_war/)
 
 ### 5. Research Highlights
 
-- **Argus: evidence assembly for scalable deep research agents** — Searcher+Navigator architecture treats deep research as assembling complementary evidence pieces rather than parallel brute-force. 35B-A3B MoE backbone reaches 86.2 on BrowseComp with 64 searchers, beating proprietary agents. Navigator context stays under 21.5K tokens. [arxiv.org/abs/2605.16217v1](https://arxiv.org/abs/2605.16217v1) — *Directly applicable architecture pattern for building research agents with small models.*
-
-- **FORGE: self-evolving agent memory via population broadcast, no weight updates** — evolves prompt-injected natural-language memory for ReAct agents. Improves returns 1.7-7.7x over zero-shot across four LLM families. Weaker models benefit disproportionately. [arxiv.org/abs/2605.16233v1](https://arxiv.org/abs/2605.16233v1) — *Practical technique for improving agent performance without fine-tuning.*
-
-- **Formal methods for LLM compliance monitoring (LTL-based)** — proposes auditing and runtime monitoring of LLM behavioral constraints using Linear Temporal Logic. Small-model labelers match or exceed frontier LLM judges for violation detection. Intervening monitors reduce violation rates while preserving task performance. [arxiv.org/abs/2605.16198v1](https://arxiv.org/abs/2605.16198v1) — *Relevant with EU AI Act in 75 days; concrete technique for compliance monitoring.*
-
-- **Probabilistic Chunk Masking (PCM) for VLA RL** — 2.38x wall-clock speedup over standard GRPO by backpropagating through <20% of trajectory chunks, targeting only phases where successful/failed rollouts diverge. [arxiv.org/abs/2605.16154v1](https://arxiv.org/abs/2605.16154v1) — *Gradient efficiency technique potentially applicable to broader RL fine-tuning.*
-
-- **Layer Equivalence: how you test redundancy changes what you find** — replacement vs interchange swap-KL probes can disagree by several-fold on which layers are safe to prune. At 8B scale, Qwen3-8B and Llama-3.1-8B behave very differently. [arxiv.org/abs/2605.16234v1](https://arxiv.org/abs/2605.16234v1) — *If you're pruning layers for inference speed, test with both protocols.*
-
----
+- **DashAttention: differentiable adaptive sparse attention** — achieves full-attention accuracy at 75% sparsity and beats NSA/InfLLMv2 in high-sparsity regimes. Triton implementation faster than FlashAttention-3 at inference. Care about this if you're deploying long-context models. [arXiv](https://arxiv.org/abs/2605.18753v1)
+- **PopPy: auto-parallelization for compound AI Python apps** — finds parallelism in Python code with heavy external calls (LLM APIs, DB queries), up to 6.4x speedup with no code changes. Directly useful for multi-step agent pipelines. [arXiv](https://arxiv.org/abs/2605.18697v1)
+- **EnvFactory: scaling tool-use RL with synthetic environments** — auto-generates executable tool environments from real APIs, +15% on BFCLv3 for Qwen3 models. Relevant if you're training function-calling models. [arXiv](https://arxiv.org/abs/2605.18703v1)
+- **Predictable Confabulations: factual recall scales with model size × topic frequency** — recall follows a sigmoid in log(params) + log(topic frequency), explaining 60-94% of variance. Practically: if your domain is underrepresented in training data, bigger models won't save you — you need RAG. [arXiv](https://arxiv.org/abs/2605.18732v1)
 
 ### 6. Technology Adoption
 
-- **Semble (MCP code search) — worth adopting now** — if you use Claude Code or Cursor on large codebases, this is a direct upgrade over grep-based code search. Zero config, CPU-only, 98% token reduction. The 0.854 NDCG@10 is solid. Install is one command. [GitHub](https://github.com/MinishLab/semble)
-
-- **SmallCode: coding agent designed for small local models (4B params, 87% benchmark)** — uses compound tools, improvement loops, decompose-on-failure, and optional cloud escalation. Interesting scaffold if you want to run coding agents on consumer hardware. Not yet battle-tested at scale. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgecrq/i_built_a_coding_agent_that_gets_87_on_benchmarks/)
-
-- **Shannon: autonomous AI pentester (white-box)** — analyzes source code, identifies attack vectors, executes real exploits. 200 GitHub stars today. Worth evaluating if you need automated security testing, but verify it against your own stack before trusting results. [GitHub](https://github.com/KeygraphHQ/shannon)
-
-- **Hermes Agent vs Claude Code vs OpenClaw comparison on 18 real tasks** — Towards AI published a head-to-head. Worth reading if you're evaluating agent options. [Towards AI](https://pub.towardsai.net/i-tested-hermes-agent-vs-claude-code-vs-openclaw-on-18-real-tasks-the-10-week-old-one-cheats-by-0f2881a10213?source=rss----98111c9905da---4)
-
-- **Abliterlitics: 85 GPU-hours comparing 5 abliteration methods on Qwen3.6-27B** — rigorous open-source toolkit. Heretic and Huihui preserve capabilities best; AEON's "enhanced capabilities" claim contradicted by data; Abliterix worst for capability preservation. Useful reference if you use uncensored models. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tfmocw/85_gpuhours_comparing_5_abliteration_methods_on/) | [HuggingFace](https://huggingface.co/DreamFast/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Safetensor-Benchmark)
-
----
+- **InsForge (open-source Heroku for coding agents)** — YC P26, Apache 2.0. One CLI install gives Claude Code/Cursor full backend control: hosting, DB, auth, storage, cron, edge functions, vector DB. Key feature: backend branching (like Neon) so agents can't destroy your DB. Early but worth tracking if you let agents deploy code. [GitHub](https://github.com/InsForge/InsForge), [Hacker News](https://news.ycombinator.com)
+- **Sieve: scans AI coding tool transcripts for leaked API keys** — Cursor, Claude Code, Copilot, Cline, etc. all persist .env contents in plaintext SQLite. Sieve finds and redacts them. Mac only. Real gap that standard secret scanners miss. [Hacker News](https://apps.apple.com/us/app/sieve-secret-scanner/id6767409365?mt=12)
+- **LLMCap: dollar-cap proxy for LLM API calls** — hard-stops spend at a configured limit. Simple, solves a real problem for personal/team use. [llmcap.io](https://www.llmcap.io/)
+- **Pi coding agent gaining traction for local models** — only 4 tools, ~2K token system prompt, works well with Qwen 27B locally. Multiple r/LocalLLaMA users now preferring it over Claude Code/Codex CLI for local setups. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th5t1b/favorite_agentic_coding_harness/), [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th8a43/we_have_subagents_at_home/)
+- **paperswithcode.co** — HF's revival of the original. Already has leaderboards, trending papers, citation counts, and Terminal Bench harness reports. Bookmark it. [paperswithcode.co](https://paperswithcode.co), [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tgmwqr/reviving_paperswithcode_by_hugging_face_p/)
 
 ### 8. Watchlist Updates
 
-- **llama.cpp MTP production readiness** — b9200 is a meaningful step forward. The logits-copying fix directly addresses MTP memory overhead. Community benchmarks show default MTP flags are suboptimal for agent workflows; tuned settings (`--spec-draft-n-max 3`, single slot, no p-min) dramatically improve draft acceptance. MTP is becoming usable for production agent serving on consumer GPUs. Not yet resolved, but progressing. [PR #23198](https://reddit.com/r/LocalLLaMA/comments/1tft1il/llama_avoid_copying_logits_during_prompt_decode/) | [b9200 benchmarks](https://reddit.com/r/LocalLLaMA/comments/1tg6j9u/benchmarking_the_new_b9200_update_optimizing_qwen/)
-
-- **Orthrus vLLM/llama.cpp integration** — no new updates today.
-
-- **Anthropic Mythos Preview** — no new updates today.
-
-- **U.S. pre-deployment AI model evaluation mandate** — no new updates today.
-
-- **NEW WATCHLIST: Google I/O 2026 (May 19)** — Gemini 4 and potentially new model APIs expected tomorrow. Could affect model rankings across multiple tasks.
-
-- **NEW WATCHLIST: Cerebras public access to GPT-5.4/5.5** — CFO says "coming soon." If realized, frontier-model inference at Cerebras speeds would reshape the serving landscape.
-
-- **NEW WATCHLIST: EU AI Act enforcement (August 2, 2026)** — 75 days out. Any team serving EU clients with high-risk AI systems needs logging, documentation, and bias testing in place.
+- **Google I/O 2026 is TODAY (May 19)** — Gemini 3.5 confirmed, Gemini Omni (video model) expected, possible new Flash model. Watch for model specs, API pricing, and vLLM compatibility announcements. [r/singularity](https://reddit.com/r/singularity/comments/1thagv4/google_io_is_tomorrow_what_are_we_expecting/), [r/singularity](https://reddit.com/r/singularity/comments/1thg4n1/gemini_35_confirmed_by_google_deepmind_employee/)
+- **NEW WATCHLIST: Qwen 3.7 release** — placeholder spotted on Qwen website. No timeline but likely imminent. [r/singularity](https://reddit.com/r/singularity/comments/1tgpwdh/qwen_37_has_been_spotted_on_the_qwen_website/)
+- **NEW WATCHLIST: Anthropic Stainless acquisition impact** — monitor whether OpenAI/other providers' SDK quality changes now that Stainless is Anthropic-owned. [Anthropic Blog](https://www.anthropic.com/news/anthropic-acquires-stainless)
+- **llama.cpp MTP production readiness** — MTP KV cache quantization confirmed zero-loss, ik_llama.cpp pushing 73 tok/s on single 3090. Rapidly maturing. Keep on watchlist for vLLM MTP parity.
+- **EU AI Act enforcement (August 2, 2026)** — 75 days. No change.
 
 
 
