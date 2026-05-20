@@ -1,61 +1,112 @@
-# AI News Daily Briefing — 2026-05-19
+# AI News Daily Briefing — 2026-05-20
 
-# AI Daily Briefing — May 19, 2026
+# AI Daily Briefing — May 20, 2026
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Gemini 3.5 confirmed by Google DeepMind employee** — spotted ahead of Google I/O today. No specs yet. [r/singularity](https://reddit.com/r/singularity/comments/1thg4n1/gemini_35_confirmed_by_google_deepmind_employee/)
-- **Gemini 3.2 Flash solves IMO 2025 P6** — previously only GPT-5.5-Pro could solve this without scaffolding. Strong signal for reasoning capability in a Flash-tier model. [r/singularity](https://reddit.com/r/singularity/comments/1tgn8qt/gemini_32_flash_is_capable_of_solving_imo_2025_p6/)
-- **Qwen 3.7 spotted on the Qwen website** — no details, just a placeholder. Expect imminent release given community hype. [r/singularity](https://reddit.com/r/singularity/comments/1tgpwdh/qwen_37_has_been_spotted_on_the_qwen_website/), [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgrpqc/qwen_cant_wait_to_release_37_models/)
-- **Lance by ByteDance** — 3B param Apache-2.0 unified model for image/video understanding, generation, and editing. Uses dual-stream MoE architecture. Worth watching for lightweight multimodal pipelines. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tgjrm2/lance_by_bytedance_3b_apache2_model_for_image_and/), [arXiv](https://arxiv.org/abs/2605.18678v1)
+- **Gemini 3.5 Flash released (GA)** — 1M input / 65K output tokens, model ID `gemini-3.5-flash`, knowledge cutoff Jan 2025. Skipped preview, straight to GA. **Pricing is controversial:** $1.50/$9 per 1M input/output tokens — 3x more than previous Flash, 30x more than 1.5 Flash. Artificial Analysis scores it at **55 intelligence** vs Gemini 3.1 Pro's **57**, while costing more in their benchmark ($1,552 vs $892). Cursor evals suggest it's mediocre at coding. Closed. [Google Blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/) · [Simon Willison](https://simonwillison.net/2026/May/19/gemini-35-flash/#atom-everything) · [Artificial Analysis data via r/singularity](https://reddit.com/r/singularity/comments/1thvfxo/gemini_35_flash_looks_worse_than_it_seems_on/)
+
+- **Gemini Omni launched at Google I/O** — Native multimodal model with video generation and editing built in. Early demos show strong video editing capabilities (style transfer, object replacement, lip-sync). No standalone API pricing yet. Closed. [Google DeepMind](https://deepmind.google/models/gemini-omni/) · [HN discussion](https://news.ycombinator.com/item?id=44030000)
+
+- **Qwen 3.7 Max benchmarked by Artificial Analysis** — Sits at 5th place, on par with GPT-5.4 (xhigh), above Gemini 3.5 Flash. The 27B/35B open-weight versions are still unreleased. Closed (Max only). [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tie6gy/qwen37_max_scored_by_artificial_analysis_27b35b/)
+
+- **NVIDIA Nemotron-Labs-Diffusion (3B/8B/14B)** — Tri-mode model supporting AR, diffusion-based parallel decoding, and self-speculation in a single model. Key claim: **5.9x tokens per forward vs Qwen3-8B (no MTP)** at same accuracy. 850 tok/s on GB200 (8B), 112 tok/s on DGX Spark. Includes vision-language variants. Open-weight. [HuggingFace](https://huggingface.co/nvidia/Nemotron-Labs-Diffusion-VLM-8B) · [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1thv6du/nemotronlabsdiffusion_from_nvidia/)
+
+- **OlmoEarth v1.1** — More efficient family from Allen AI. Incremental improvement. Open-weight. [HuggingFace Blog](https://huggingface.co/blog/allenai/olmoearth-v1-1)
+
+---
 
 ### 2. Framework & Tooling Updates
 
-- **ik_llama.cpp beats upstream llama.cpp for Qwen3.6 27B on RTX 3090** — 72.9 tok/s decode vs ~59.5 tok/s upstream, with 156k context, q8 KV, MTP, all in 24GB VRAM. The `IQ4_KS` quant + `--merge-qkv --merge-up-gate-experts` flags are the key. Best single-3090 setup tested. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgis7s/qwen_36_27b_on_24gb_vram_setup_backend/)
-- **Quantizing MTP draft KV cache is free lunch** — `-cache-type-k-draft q8_0 -cache-type-v-draft q8_0` saves VRAM with zero quality loss (identical accept rates). Most people don't know this flag exists. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tgk9y6/quantizing_mtp_kv_cache_free_lunch/)
-- **Lemonade v10.5.1** — one-command MTP + ROCm 7.13 setup for Strix Halo, plus Fedora 43 fix. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th0z6k/lemonade_v1051_an_mtp_rocm_713_quick_start_for/), [GitHub](https://github.com/lemonade-sdk/lemonade)
+- **LM Studio 0.4.14 Build 2 adds MTP Speculative Decoding** — Requires llama.cpp engine 2.15.0. Must manually enable MTP in model load parameters before loading. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1ti99an/lm_studio_finally_added_support_for_mtp/)
+
+- **Gemini CLI will stop working June 18, 2026** — Google is transitioning to Antigravity CLI. If you have Gemini CLI in any automation, migrate now. [Google Developers Blog](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/)
+
+- **Ettin Reranker Family released** — New reranker models on HuggingFace. Relevant if you're building RAG pipelines. [HuggingFace Blog](https://huggingface.co/blog/ettin-reranker)
+
+- **rtk — CLI proxy reducing LLM token consumption by 60-90%** — Single Rust binary, zero dependencies. Sits between your dev tools and LLM APIs to compress common CLI output before sending to the model. 704 GitHub stars today. [GitHub](https://github.com/rtk-ai/rtk)
+
+- **Google AI Edge Gallery v1.0.13-14** — Gemma 4 Multi-Token Prediction, Pixel TPU support, experimental MCP, chat history persistence. [GitHub](https://github.com/google-ai-edge/gallery/releases)
+
+- **llm-gemini 0.32** — Simon Willison's LLM plugin adds `gemini-3.5-flash` model support. [Simon Willison](https://simonwillison.net/2026/May/19/llm-gemini-2/#atom-everything)
+
+---
 
 ### 3. Infrastructure & Deployment
 
-- **Modal cuts inference cold starts by 40x** — combines LP (lazy provisioning), FUSE filesystem, checkpoint/restore, and CUDA-checkpoint to achieve near-instant GPU cold starts for serverless inference. Directly relevant if you serve models on Modal or similar platforms. [Hacker News](https://modal.com/blog/truly-serverless-gpus)
-- **RTX 3090 power limits matter more than expected** — re-benchmarking 26 models at 200W vs 450W showed +70% to +113% throughput on dense 27-32B models. If you're running multi-GPU rigs on limited circuits, you're leaving massive performance on the table. [calebcoffie.com](https://calebcoffie.com/blog/how-much-do-power-limits-affect-llm-benchmark-tok-s)
+- **DeepSeek-V4 running on 4x RTX 2080 Ti for under $2,500** — Custom Turing CUDA kernels with W8A8 quantization achieve 255 prefill tok/s. Uses heterogeneous inference across 44GB VRAM + 1TB system RAM. Impressive proof-of-concept for budget MoE serving. Fully open-sourced with tech report. [GitHub](https://github.com/lvyufeng/deepseek-v4-2080ti) · [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1ti5sxu/running_deepseekv4_locally_with_4x_legacy_rtx/)
+
+- **Intel Crescent Island PCB leaks: 160GB LPDDR5X** — Xe3P data center GPU bypasses HBM shortage with 20x 8GB LPDDR5X modules. Estimated 704-760 GB/s bandwidth. Worth watching for future local inference. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1thxig9/intels_crescent_island_pcb_leaks_showing_a/)
+
+- **Cerebras running Kimi K2.6 (trillion-parameter MoE) at 1,000 tok/s** — Enterprise deployment. Shows Cerebras hardware scaling to truly massive MoE models. [Cerebras Blog](https://www.cerebras.ai/blog/cerebras-kimi-k2-Enterprise) · [r/singularity](https://reddit.com/r/singularity/comments/1thw41i/cerebras_is_running_a_trillion_parameter_model/)
+
+- **Forge: guardrails take 8B local model from 53% to 99% on agentic tasks** — Open-source reliability layer for self-hosted LLM tool-calling. Peer-reviewed (ACM CAIS '26): Ministral 8B + Forge (99.3%) outperforms Claude Sonnet without Forge (87.2%). Adds retry nudges, step enforcement, error recovery, VRAM-aware context management. [GitHub](https://github.com/antoinezambelli/forge) · [HN](https://news.ycombinator.com/item?id=44030000)
+
+- **NVIDIA Nemotron self-speculation as MTP alternative** — 3x higher acceptance length and 2.2x speedup vs Qwen3-8B-Eagle3 in SGLang. Moves generation from memory-bound to compute-bound. Worth evaluating if you serve 8B-14B models. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1thv6du/nemotronlabsdiffusion_from_nvidia/)
+
+---
 
 ### 4. Industry Moves
 
-- **Anthropic acquires Stainless** — Stainless builds the auto-generated typed SDKs (Python, TypeScript, Go, etc.) that Anthropic, OpenAI, and others use for their APIs. This brings SDK generation in-house for Anthropic. Could affect third-party SDK quality for other providers long-term. [Anthropic Blog](https://www.anthropic.com/news/anthropic-acquires-stainless)
-- **OpenAI + Dell: Codex goes on-premise** — enterprise partnership to bring Codex to hybrid and on-prem environments. Targets regulated industries that can't send code to external APIs. [OpenAI Blog](https://openai.com/index/dell-codex-enterprise-partnership)
-- **Musk loses OpenAI lawsuit** — federal jury dismissed all claims, ruling he filed too late. This is now settled. [TechCrunch](https://techcrunch.com/2026/05/18/elon-musk-has-lost-his-lawsuit-against-sam-altman-and-openai/), [CNBC](https://www.cnbc.com/2026/05/18/musk-altman-openai-trial-verdict.html)
-- **Hugging Face revives PapersWithCode** — new site at paperswithcode.co with AI-parsed leaderboards, trending papers by GitHub stars, citation counts, and harness reports for coding benchmarks like Terminal Bench. Meta's original site is no longer maintained. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tgmwqr/reviving_paperswithcode_by_hugging_face_p/)
-- **314 npm packages compromised (Mini Shai-Hulud)** — supply chain attack. Check your dependencies. [Hacker News](https://safedep.io/mini-shai-hulud-strikes-again-314-npm-packages-compromised/)
-- **RAM prices may drop in 2027 H2** — CXMT (Chinese memory maker) had 1,688% profit surge, expanding to 300k+ wafers/month, investing in HBM and DDR5. Good news for local inference long-term. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th3r5q/memory_expert_suspects_ram_price_drop_in_2027h2/), [wccftech](https://wccftech.com/ex-samsung-chip-boss-says-chinas-dram-blitz-could-crush-the-414-ddr5-price-spike-within-a-year/)
-- **Cloudflare publishes honest review of Anthropic Mythos Preview** — confirms the model chains exploit primitives like a senior researcher, but guardrails are inconsistent: same task framed differently produces different outcomes. [r/artificial](https://reddit.com/r/artificial/comments/1tgy0j4/cloudflare_just_published_what_they_found_after/)
-- **Schiff proposes bill requiring data centers to pay for own power** — would shift energy costs currently subsidized by ratepayers. [r/singularity](https://reddit.com/r/singularity/comments/1tgsqd9/schiff_proposes_bill_requiring_data_centers_to/), [Bloomberg Government](https://news.bgov.com/bloomberg-government-news/schiff-proposes-bill-requiring-data-centers-to-pay-for-own-power)
-- **Kilo Code data: Chinese models dominate token volume** — Step 3.5 Flash, MiniMax M2.5, and Ling-2.6-1T account for ~58% of Kilo Code's OpenRouter token usage. Price-driven, not necessarily quality-driven. [r/artificial](https://reddit.com/r/artificial/comments/1tgpqaa/tools_is_this_a_technical_victory_or_a_price_war/)
+- **Andrej Karpathy joins Anthropic** — Major talent acquisition. Previously co-founded OpenAI, led Tesla AI. Broad consensus this is a significant win for Anthropic. [Twitter](https://twitter.com/karpathy/status/2056753169888334312) · [Axios](https://www.axios.com/2026/05/19/anthropic-openai-karpathy-andrej-claude) · [HN](https://news.ycombinator.com/item?id=44030000)
+
+- **Mistral AI acquires Emmi AI** — Details sparse, but 261 HN points with 76 comments suggests significant interest. Expands Mistral's capabilities. [Emmi AI](https://www.emmi.ai/news/mistral-ai-acquires-emmi-ai)
+
+- **KPMG integrates Claude across 276,000-person workforce** — Strategic alliance with Anthropic for core business operations. Follows the trend of Claude overtaking ChatGPT in enterprise (previously reported). [Anthropic Blog](https://www.anthropic.com/news/anthropic-kpmg)
+
+- **OpenAI adopts Google's SynthID watermark** — Also launching a verification tool for AI-generated media. Content Credentials integration. [OpenAI Blog](https://openai.com/index/advancing-content-provenance)
+
+- **X open-sources its Grok-powered feed algorithm** — 187 files, 18,000 lines of code. The recommendation system black box is now inspectable. [Towards AI](https://pub.towardsai.net/x-open-sourced-its-feed-algorithm-powered-by-grok-e5a13d67e741?source=rss----98111c9905da---4)
+
+- **Google Antigravity 2.0 demonstrated at I/O** — Agentic coding platform built 93 parallel sub-agents to create a working OS from scratch in 12 hours for under $1K. Marketing demo, but shows Google's bet on agent-first development. [r/singularity](https://reddit.com/r/singularity/comments/1thug7n/googles_antigravity_20_creates_an_operating/) · [Google Blog](https://blog.google/innovation-and-ai/sundar-pichai-io-2026/)
+
+- **Railway blocked by Google Cloud (resolved)** — GCP suspended Railway's account, causing outage. Cautionary tale for single-cloud dependency. [Railway Blog](https://blog.railway.com/p/incident-report-may-19-2026-gcp-account-outage)
+
+---
 
 ### 5. Research Highlights
 
-- **DashAttention: differentiable adaptive sparse attention** — achieves full-attention accuracy at 75% sparsity and beats NSA/InfLLMv2 in high-sparsity regimes. Triton implementation faster than FlashAttention-3 at inference. Care about this if you're deploying long-context models. [arXiv](https://arxiv.org/abs/2605.18753v1)
-- **PopPy: auto-parallelization for compound AI Python apps** — finds parallelism in Python code with heavy external calls (LLM APIs, DB queries), up to 6.4x speedup with no code changes. Directly useful for multi-step agent pipelines. [arXiv](https://arxiv.org/abs/2605.18697v1)
-- **EnvFactory: scaling tool-use RL with synthetic environments** — auto-generates executable tool environments from real APIs, +15% on BFCLv3 for Qwen3 models. Relevant if you're training function-calling models. [arXiv](https://arxiv.org/abs/2605.18703v1)
-- **Predictable Confabulations: factual recall scales with model size × topic frequency** — recall follows a sigmoid in log(params) + log(topic frequency), explaining 60-94% of variance. Practically: if your domain is underrepresented in training data, bigger models won't save you — you need RAG. [arXiv](https://arxiv.org/abs/2605.18732v1)
+- **Nemotron-Labs-Diffusion: Self-Speculation via Diffusion Drafting** — Same model does diffusion-based parallel drafting + AR verification with shared KV cache. Practical implication: potentially replaces MTP as the dominant speculative decoding approach. 5.9x tokens per forward pass. [HuggingFace model card](https://huggingface.co/nvidia/Nemotron-Labs-Diffusion-VLM-8B)
+
+- **Carbon: DNA Foundation Models (HuggingFace)** — 3B model matching Evo2-7B SOTA while being 275x faster. Uses 6-mer tokenization and factorized loss. Not directly relevant to coding, but demonstrates that LLM training techniques transfer to biology. [GitHub tech report](https://github.com/huggingface/carbon/blob/main/tech-report.pdf) · [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1thsw7b/carbon_decoding_the_language_of_life/)
+
+---
 
 ### 6. Technology Adoption
 
-- **InsForge (open-source Heroku for coding agents)** — YC P26, Apache 2.0. One CLI install gives Claude Code/Cursor full backend control: hosting, DB, auth, storage, cron, edge functions, vector DB. Key feature: backend branching (like Neon) so agents can't destroy your DB. Early but worth tracking if you let agents deploy code. [GitHub](https://github.com/InsForge/InsForge), [Hacker News](https://news.ycombinator.com)
-- **Sieve: scans AI coding tool transcripts for leaked API keys** — Cursor, Claude Code, Copilot, Cline, etc. all persist .env contents in plaintext SQLite. Sieve finds and redacts them. Mac only. Real gap that standard secret scanners miss. [Hacker News](https://apps.apple.com/us/app/sieve-secret-scanner/id6767409365?mt=12)
-- **LLMCap: dollar-cap proxy for LLM API calls** — hard-stops spend at a configured limit. Simple, solves a real problem for personal/team use. [llmcap.io](https://www.llmcap.io/)
-- **Pi coding agent gaining traction for local models** — only 4 tools, ~2K token system prompt, works well with Qwen 27B locally. Multiple r/LocalLLaMA users now preferring it over Claude Code/Codex CLI for local setups. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th5t1b/favorite_agentic_coding_harness/), [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1th8a43/we_have_subagents_at_home/)
-- **paperswithcode.co** — HF's revival of the original. Already has leaderboards, trending papers, citation counts, and Terminal Bench harness reports. Bookmark it. [paperswithcode.co](https://paperswithcode.co), [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tgmwqr/reviving_paperswithcode_by_hugging_face_p/)
+- **Forge (guardrails for local models) — worth evaluating now** if you run local agentic workflows. The 53% → 99% improvement on 8B models is peer-reviewed across 97 configurations. The key insight: error recovery scores 0% for *every* model without retry mechanisms — this is an architectural gap, not a model gap. [GitHub](https://github.com/antoinezambelli/forge)
+
+- **rtk (CLI token compression proxy) — worth trying** if you're spending on LLM API calls for dev tooling. 60-90% token reduction, single Rust binary. 704 stars in one day suggests strong early adoption signal. [GitHub](https://github.com/rtk-ai/rtk)
+
+- **claude-plugins-official — Anthropic's managed plugin directory for Claude Code** is now live. If you use Claude Code, check what's available. [GitHub](https://github.com/anthropics/claude-plugins-official)
+
+- **andrej-karpathy-skills CLAUDE.md** — A single CLAUDE.md file derived from Karpathy's observations on LLM coding pitfalls. 1,955 stars today. Drop-in improvement for Claude Code behavior. [GitHub](https://github.com/multica-ai/andrej-karpathy-skills)
+
+---
+
+### 7. Model Rankings Update
+
+No ranking changes today. Key observations:
+
+- **Gemini 3.5 Flash** (AA score: 55) does not crack top 5 for any tracked task. It scores below Gemini 3.1 Pro (57) while costing more. Cursor evals show weak coding performance. The "Flash" branding no longer means "cheap."
+- **Qwen 3.7 Max** AA data is promising (5th on AA, on par with GPT-5.4 xhigh), but the open-weight 27B/35B versions aren't released yet. Rankings will update when they are.
+- **Nemotron-Labs-Diffusion** is an inference efficiency breakthrough, not a quality improvement — doesn't affect task rankings.
+
+---
 
 ### 8. Watchlist Updates
 
-- **Google I/O 2026 is TODAY (May 19)** — Gemini 3.5 confirmed, Gemini Omni (video model) expected, possible new Flash model. Watch for model specs, API pricing, and vLLM compatibility announcements. [r/singularity](https://reddit.com/r/singularity/comments/1thagv4/google_io_is_tomorrow_what_are_we_expecting/), [r/singularity](https://reddit.com/r/singularity/comments/1thg4n1/gemini_35_confirmed_by_google_deepmind_employee/)
-- **NEW WATCHLIST: Qwen 3.7 release** — placeholder spotted on Qwen website. No timeline but likely imminent. [r/singularity](https://reddit.com/r/singularity/comments/1tgpwdh/qwen_37_has_been_spotted_on_the_qwen_website/)
-- **NEW WATCHLIST: Anthropic Stainless acquisition impact** — monitor whether OpenAI/other providers' SDK quality changes now that Stainless is Anthropic-owned. [Anthropic Blog](https://www.anthropic.com/news/anthropic-acquires-stainless)
-- **llama.cpp MTP production readiness** — MTP KV cache quantization confirmed zero-loss, ik_llama.cpp pushing 73 tok/s on single 3090. Rapidly maturing. Keep on watchlist for vLLM MTP parity.
-- **EU AI Act enforcement (August 2, 2026)** — 75 days. No change.
+- **RESOLVED: Google I/O 2026 (May 19)** — Happened. Gemini 3.5 Flash, Gemini Omni, Antigravity 2.0, Interactions API all launched.
+- **Qwen 3.7 27B/35B release** — Still waiting. Max version benchmarked but open-weight variants not yet available.
+- **NEW WATCHLIST: Gemini CLI deprecation (June 18, 2026)** — Migrate to Antigravity CLI. [Google Developers Blog](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/)
+- **NEW WATCHLIST: Nemotron self-speculation in vLLM/SGLang** — Already benchmarked in SGLang. Watch for vLLM integration.
+- **NEW WATCHLIST: Karpathy's impact at Anthropic** — Could accelerate Claude model development or open-source efforts.
+- **Cerebras public access to GPT-5.4/5.5** — No update. Now also running Kimi K2.6 at 1000 tok/s.
+- **EU AI Act enforcement (August 2, 2026)** — 74 days remaining.
+- **llama.cpp MTP production readiness** — LM Studio now supports it (v0.4.14 Build 2). Getting closer to mainstream.
+- **Anthropic Stainless acquisition impact** — Karpathy hire may overshadow this; no new details.
 
 
 
