@@ -1,88 +1,76 @@
-# AI News Daily Briefing — 2026-05-22
+# AI News Daily Briefing — 2026-05-23
 
-# AI Daily Briefing — May 22, 2026
+# AI Daily Briefing — 2026-05-23
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Tencent Hy-MT2 translation models released (30B-A3B/7B/1.8B)** — MoE architecture, 33-language support. Claims 7B and 30B outperform DeepSeek-V4-Pro and Kimi K2.6 in fast-thinking translation mode. 1.8B model compresses to 440MB via 1.25-bit quantization. Open-weight with new IFMTBench benchmark included. Niche but strong if you need multilingual translation. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tjien7/tencent_hy_30b7b18b/)
+- **NuExtract3: 4B open-weight VLM for document extraction** — Based on Qwen3.5-4B, Apache 2.0. Converts document images to Markdown, extracts structured data via JSON templates, handles tables/forms/receipts. Successor to NuMarkdown. Free HF Space demo available. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tkejqr/nuextract3_released_openweight_4b_vlm_for/) | [HuggingFace](https://huggingface.co/spaces/numind/NuExtract3)
 
-- **Grok 4.3 tops LLM Sycophancy Benchmark for consistency** — Most cautious model, least likely to flip its judgment based on who's speaking. GPT-5.5 and Gemini 3.1 Pro scored as "highly decisive" while Mistral and GPT-4.1 were flagged as highly sycophantic. Not from a trusted benchmark source, but useful signal for conversational reliability. [r/singularity](https://reddit.com/r/singularity/comments/1tjr3g5/grok_43_tops_the_consistency_leaderboard_in_the/) · [GitHub](https://github.com/lechmazur/sycophancy)
+- **TML-Interaction-Small from Thinking Machines Lab** — 276B MoE (12B active) multimodal model that processes audio, video, and text concurrently rather than turn-by-turn. Leads voice interactivity benchmarks but trails GPT-Realtime-2 on reasoning. Closed research preview coming; wider release later 2026. [The Batch](https://charonhub.deeplearning.ai/built-in-conversational-interactivity/)
+
+- **NVIDIA Nemotron-Labs Diffusion Language Models** — Diffusion-based (not autoregressive) text generation targeting dramatically faster inference. HuggingFace blog covers the approach. Early research, not production-ready yet. [HuggingFace Blog](https://huggingface.co/blog/nvidia/nemotron-labs-diffusion)
+
+- **NVIDIA AnyFlow: any-step video diffusion on Wan2.1** — Flow-map-based framework that lets you dynamically trade compute for quality. Available in 1.3B and 14B variants for T2V and T/I2V via Diffusers. No ComfyUI support yet. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tkmxol/nvidia_released_anyflow_based_on_wan_basically_it/) | [HuggingFace](https://huggingface.co/nvidia/AnyFlow-FAR-Wan2.1-14B-Diffusers)
 
 ---
 
 ### 2. Framework & Tooling Updates
 
-- **llama.cpp b9274 fixes MTP VRAM leak** — MTP draft context GPU resources (KV cache, compute buffers) were not freed on sleep/resume cycles, causing OOM crashes over time. Now fixed. Upgrade immediately if you run MTP models on llama.cpp server. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tk0grd/latest_b9274_addresses_mtp_vram_leak/) · [GitHub Release](https://github.com/ggml-org/llama.cpp/releases/tag/b9274)
+- **BeeLlama v0.2.0: DFlash delivers 4–5x speedup on single RTX 3090** — Qwen 3.6 27B hits 164 tok/s median (4.40x over baseline), Gemma 4 31B hits 178 tok/s (4.93x). Adds full Gemma 4 vision support, drafter K/V caching, and upstream GGUF compatibility. Requires a separate DFlash draft model. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkpz2y/beellama_v020_major_dflash_update_single_rtx_3090/) | [GitHub](https://github.com/Anbeeld/beellama.cpp)
 
-- **llama.cpp PR #22929 fixes constant prompt reprocessing with OpenCode/Pi** — If you use llama.cpp as a backend for OpenCode or Pi coding agents, this PR stops the server from re-processing the full prompt on every request. Significant latency improvement for agent workflows. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tjoiij/for_everyone_that_uses_opencode_pi_heres_your/) · [GitHub PR](https://github.com/ggml-org/llama.cpp/pull/22929)
-
-- **ik_llama.cpp hits 110 tok/s with Qwen3.6 35B-A3B on 12GB VRAM** — Fork of llama.cpp with better CPU offloading. On RTX 4070 Super + Ryzen 7 9700X, ik_llama.cpp with MTP gets 110 tok/s vs ~90 tok/s on mainline llama.cpp. Worth trying if you're running MoE models with partial GPU offload. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tjh7az/110_toks_with_12gb_vram_on_qwen36_35b_a3b_and_ik/)
-
-- **"Am I OpenAI Compatible" — compatibility checker for LLM serving engines** — Documents API signature differences between vLLM, llama.cpp, and other engines. Useful if you're building middleware or swapping backends. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tjgceg/am_i_openai_compatible_a_tool_and_documentation/) · [GitHub](https://github.com/heiervang-technologies/am-i-openai-compatible)
+- **Cohere Transcribe fine-tuned for diarization + timestamps** — Community fine-tune adds speaker identification (up to 32 speakers) and timestamps (0.097s average accuracy) to the best open-source STT model. Free on HuggingFace. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkunbg/i_finetuned_cohere_transcribe_to_support/) | [HuggingFace](https://huggingface.co/syvai/cohere-transcribe-diarize)
 
 ---
 
 ### 3. Infrastructure & Deployment
 
-- **CODA: Fusing transformer blocks into GEMM epilogue programs** — Rewrites attention + FFN blocks as fused GEMM-epilogue kernels, eliminating memory-bound elementwise ops. Direct serving speedup potential for custom inference stacks. [arXiv](https://arxiv.org/abs/2605.19269) · [Hacker News](https://news.ycombinator.com/item?id=48225596)
+- **Qwen3.6 27B "pure" Q4_K_M fits in 16GB VRAM, 40 tok/s with MTP** — New quantization method shrinks Q4_K_M from 16.8–17.1 GB to 15.4 GB (MTP) / 15.1 GB (non-MTP). MTP variant hits 40 tok/s TG on RTX 5060 Ti 16GB. Trade-off: prompt processing drops from 715 to 195 tok/s with MTP. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkzk9e/qwen36_27b_pure_quant_40_toks_on_16_gb_vram/) | [HuggingFace](https://huggingface.co/huytd189/Qwen3.6-27B-pure-GGUF)
 
-- **DeltaBox: millisecond-level sandbox checkpoint/rollback for AI agents** — OS-level abstraction (DeltaFS + DeltaCR) that does incremental C/R instead of full state duplication. 14ms checkpoint, 5ms rollback. Tested on SWE-bench. Directly relevant if you're building tree-search or RL loops for coding agents. [arXiv](https://arxiv.org/abs/2605.22781v1)
+- **Blackwell PDL (Programmatic Dependent Launch) gives free 5–10% TG boost** — Build llama.cpp with `-DGGML_CUDA_PDL=ON` on CC ≥ 90 GPUs (not Ada). Tested on RTX Pro 4500: Qwen 3.6 35B-A3B gets +6–9% TG, Gemma 4 26B-A4B gets +5%. No PP improvement. May now be enabled by default in b9254+. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkw1su/blackwell_and_pdl_performance_increase/)
 
-- **AMD Gorgon Halo: only 6.7% faster than Strix Halo** — Memory bandwidth goes from 8000 to 8533 MHz, which is the bottleneck for LLM inference. Supports up to 192GB unified memory. Verdict: skip it, wait for Medusa Halo (summer 2027, ~50% improvement). [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tjqfr4/gorgon_halo_is_67_faster_than_predecessor_strix/) · [Tom's Hardware](https://www.tomshardware.com/pc-components/cpus/amd-ryzen-ai-max-400-gorgon-halo-packs-up-to-192gb-of-unified-memory-refreshed-apu-uses-zen-5-and-rdna-3-5-and-can-clock-up-to-5-2-ghz)
+- **Experts-first llama.cpp fork for MoE on 12GB VRAM** — Instead of offloading full layers (with all experts) to CPU, this fork loads only the most-used experts into VRAM. On RTX 2060 with Qwen 35B-A3B: 26 tok/s vs 22 tok/s with `-ot` tuning vs 19 tok/s with default `--n-cpu-moe`. Break-even at 42% cache hit rate. Linux/CUDA only, seeking testers. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tknbzh/experts_first_llamacpp/)
 
 ---
 
 ### 4. Industry Moves
 
-- **Microsoft cancels internal Anthropic licenses** — Token-based billing reportedly blew through annual budgets in months. If even Microsoft is cost-sensitive to Claude API pricing, this is a signal about enterprise consumption patterns and potential pricing pressure on Anthropic. [r/artificial](https://reddit.com/r/artificial/comments/1tkb0op/microsoft_cancels_internal_anthropic_licenses_as/)
+- **DeepSeek announces permanent 75% price cut + $10.29B financing round** — Liang Wenfeng commits to open-source over short-term commercialization. The price cut makes DeepSeek V4 Pro even more cost-dominant for API users. [r/singularity](https://reddit.com/r/singularity/comments/1tkj8l8/deepseek_announces_permanent_price_cut_of_75/) | [Bloomberg](https://www.bloomberg.com/news/articles/2026-05-22/deepseek-founder-declares-agi-goal-as-10-billion-round-advances)
 
-- **Meta serves legal notice to Heretic (LLM de-censoring project)** — Heretic has removed all Llama derivatives and is mirroring to [Codeberg](https://codeberg.org/p-e-w/heretic) in Germany. Working on "technological measures" to preserve access to non-Llama models. First major enforcement action against Llama license violators. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tjmvx6/heretic_has_been_served_a_legal_notice_by_meta_inc/)
+- **NVIDIA removes "Gaming" as a revenue category** — Signals the company's full pivot toward data center/AI as the primary business. Gaming revenue will be folded into other segments. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkw5ri/nvidia_removes_gaming_revenue_category_from/) | [Guru3D](https://www.guru3d.com/story/nvidia-removes-gaming-revenue-category-from-financial-reports/)
 
-- **Trump postpones AI executive order after White House infighting** — Details unclear behind FT paywall, but signals continued policy uncertainty in US AI regulation. [r/singularity](https://reddit.com/r/singularity/comments/1tjxvhp/donald_trump_abruptly_postpones_ai_order_after/) · [FT](https://www.ft.com/content/14213cb0-8d11-4118-bac0-12a403696185)
+- **Anthropic Mythos likely releasing "near future"** — Screenshot circulating suggesting imminent release. [r/singularity](https://reddit.com/r/singularity/comments/1tkyrva/anthropic_likely_to_release_mythos_in_the_near/)
 
-- **Krea 2 image model confirmed going open-source** — Likely the Medium variant. Community expects it to be competitive with Nano Banana Pro if given search grounding. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tjnwgo/krea_2_will_be_open_source/)
+- **OpenAI named Leader in 2026 Gartner Magic Quadrant for Enterprise AI Coding Agents** — Codex recognized for enterprise-scale deployment. [OpenAI Blog](https://openai.com/index/gartner-2026-agentic-coding-leader)
+
+- **Memory shortage repricing consumer electronics** — HBM allocation grew from 2% to ~20% of wafer capacity, squeezing DDR/LPDDR supply. Expect RAM prices to rise across laptops, phones, and desktop builds. Relevant if you're planning hardware purchases. [Simon Willison](https://simonwillison.net/2026/May/22/memory-shortage/#atom-everything) | [Original](https://davidoks.blog/p/ai-is-killing-the-cheap-smartphone)
+
+- **Hermes Agent overtakes OpenClaw on OpenRouter daily token consumption** — Nous Research's open-source agent now leads on usage. Key differentiator: automatic skill-building (self-improvement). Less token-efficient than OpenClaw per some users. [The Batch](https://charonhub.deeplearning.ai/hermes-agent-challenges-openclaw/) | [GitHub](https://github.com/NousResearch/hermes-agent)
 
 ---
 
 ### 5. Research Highlights
 
-- **VPO: Vector Policy Optimization — diversity-first RL for test-time search** — Drop-in replacement for GRPO that trains LLMs to produce diverse solutions optimized for different reward trade-offs. Gap over scalar RL widens as search budget grows. Directly relevant if you use best-of-N or evolutionary search at inference time. [arXiv](https://arxiv.org/abs/2605.22817v1)
-
-- **Multi-Stream LLMs: parallelizing prompts, thinking, and I/O** — Proposes separating prompt processing, reasoning, and output into parallel streams within the transformer. Early but could change how we think about serving latency. [arXiv](https://arxiv.org/abs/2605.12460)
-
-- **MOSS: agents that rewrite their own source code to self-improve** — Self-evolving agent system that edits its own Python source (not just prompts/configs) based on production failures. Tested on OpenClaw, lifts 4-task mean score from 0.25 to 0.61 in one cycle. Interesting if you're building long-running agents. [arXiv](https://arxiv.org/abs/2605.22794v1)
-
-- **Gated DeltaNet-2: better linear attention from NVIDIA** — Decouples erase and write gates in linear attention, outperforms Mamba-2/3 and KDA on long-context retrieval at 1.3B scale. Code available. [arXiv](https://arxiv.org/abs/2605.22791v1) · [GitHub](https://github.com/NVlabs/GatedDeltaNet-2)
-
-- **AI-driven formal proof search solves 9 open Erdős problems** — The full paper behind the previously reported result. Agent alternating LLM generation with Lean verification, at per-problem cost of a few hundred dollars. Also proved 44/492 OEIS conjectures. Being deployed in active research. [arXiv](https://arxiv.org/abs/2605.22763v1)
+- **Agent benchmarks don't reflect real work** — Carnegie Mellon/Stanford mapped 10K+ examples from 43 agent benchmarks to U.S. labor statistics. Current benchmarks massively over-index on software development; most economically valuable work is poorly represented. Means: don't trust SWE-bench as a proxy for general agent capability. [arXiv](https://arxiv.org/abs/2603.01203) | [The Batch](https://charonhub.deeplearning.ai/toward-agent-benchmarks-that-reflect-human-work/)
 
 ---
 
 ### 6. Technology Adoption
 
-- **ChromeDevTools MCP** — Official Chrome DevTools integration for coding agents (151 stars/day). Gives agents direct browser inspection capabilities. Worth evaluating if you're building web-facing agents. [GitHub](https://github.com/ChromeDevTools/chrome-devtools-mcp)
+- **Superset (YC P26): open-source IDE for running coding agents in parallel** — Manages git worktrees, port allocation, terminal sessions, and diffs across multiple concurrent agents (Claude Code, Codex, OpenCode). Solves the real pain of running 5–10 agents at once. Worth evaluating if you do heavy agent-assisted development. [Hacker News](https://news.ycombinator.com/item?id=48229319) | [GitHub](https://github.com/superset-sh/superset)
 
-- **Runtime (YC P26) — sandboxed coding agent infrastructure** — Snapshots full Docker Compose environments, injects secrets via proxy (never touches the agent), RBAC per human and per agent. Designed to let non-engineers use Claude Code/Codex safely. Early but addresses a real gap. [Hacker News](https://news.ycombinator.com/item?id=48225596) · [Website](https://www.runtm.com/)
+- **Kanbots: open-source Kanban app that runs parallel agents per card** — Each Kanban card can spawn an agent. Scored 220 points on HN. Interesting for task-parallel agentic workflows. [Hacker News](https://www.kanbots.dev/)
 
-- **Multica — open-source managed agents platform** (534 stars/day) — Assign tasks to coding agents, track progress, compound skills. Positioning as "agents as teammates." Too early to evaluate quality but worth watching. [GitHub](https://github.com/multica-ai/multica)
-
-- **Datasette Agent 0.1a3** — Simon Willison's new AI assistant for Datasette. Conversational SQL queries, chart generation via plugins, runs on Gemini 3.1 Flash-Lite. If you use Datasette for data exploration, this is worth trying now. [Simon Willison](https://simonwillison.net/2026/May/21/datasette-agent/#atom-everything) · [GitHub](https://github.com/datasette/datasette-agent)
-
-- **HarnessAPI — unified streaming API + MCP tool from one Python handler** — Eliminates dual-stack boilerplate (FastAPI + FastMCP). 74% less framework code. Subclasses FastAPI so you keep all middleware. If you're building MCP tools that also need HTTP endpoints, this saves real time. [arXiv](https://arxiv.org/abs/2605.22733v1) · [GitHub](https://github.com/edwinjosechittilappilly/harnessapi)
-
-- **notebooklm-py** — Unofficial Python API for Google NotebookLM (186 stars/day). Programmatic access to features the web UI doesn't expose, works with Claude Code, Codex, and OpenClaw. [GitHub](https://github.com/teng-lin/notebooklm-py)
+- **Models.dev: open-source database of AI model specs, pricing, and capabilities** — Structured, queryable database. Useful for comparing models programmatically. 139 HN points. [GitHub](https://github.com/anomalyco/models.dev)
 
 ---
 
 ### 8. Watchlist Updates
 
-- **llama.cpp MTP production readiness** — Progress continues. b9274 fixes a critical VRAM leak in MTP mode, and the prompt reprocessing fix (PR #22929) improves agent workflow compatibility. MTP is getting more stable but still has rough edges (user reports models unloading after minutes of use). [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tk0grd/latest_b9274_addresses_mtp_vram_leak/)
-- **Anthropic Stainless acquisition impact** — Microsoft reportedly canceling internal Anthropic licenses over token-based billing costs may be partially related to SDK/billing infrastructure changes post-acquisition. Worth monitoring. [r/artificial](https://reddit.com/r/artificial/comments/1tkb0op/microsoft_cancels_internal_anthropic_licenses_as/)
-- **NEW WATCHLIST: Meta Llama license enforcement** — Meta's legal action against Heretic is the first visible enforcement. Could affect other projects distributing modified Llama weights.
-- **NEW WATCHLIST: Krea 2 open-source release** — Confirmed coming, likely Medium variant. No release date yet.
-- **NEW WATCHLIST: AMD Medusa Halo** — Summer 2027, ~50% AI performance improvement over Strix Halo. The meaningful upgrade for local inference on unified memory AMD chips.
+- **NEW WATCHLIST: Anthropic Mythos release** — Leak/screenshot suggests "near future" launch. Anthropic's cybersecurity report warned Mythos Preview can find zero-day vulnerabilities, so expect a gated release.
+- **NEW WATCHLIST: Memory price increases** — HBM demand squeezing DDR/LPDDR supply through at least 2027. Plan hardware purchases accordingly.
+- **DeepSeek open-source commitment** — Liang Wenfeng reaffirmed open-source strategy with $10.29B round. Reduces risk of DeepSeek going closed.
 
 
 
