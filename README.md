@@ -1,76 +1,72 @@
-# AI News Daily Briefing — 2026-05-23
+# AI News Daily Briefing — 2026-05-24
 
-# AI Daily Briefing — 2026-05-23
+# Daily AI Briefing — 2026-05-24
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **NuExtract3: 4B open-weight VLM for document extraction** — Based on Qwen3.5-4B, Apache 2.0. Converts document images to Markdown, extracts structured data via JSON templates, handles tables/forms/receipts. Successor to NuMarkdown. Free HF Space demo available. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tkejqr/nuextract3_released_openweight_4b_vlm_for/) | [HuggingFace](https://huggingface.co/spaces/numind/NuExtract3)
+- **Cohere Command A+ released (218B MoE, 25B active, Apache 2.0)** — 128 experts top-8 routing, sigmoid routing (not softmax), sliding window attention 3:1. Already running on Apple Silicon via MLX at 22.9 tok/s generation. A serious open-weight contender for tool-calling and multi-turn workloads. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tlqxeh/command_a_218b_moe_running_on_apple_silicon_mlx/)
 
-- **TML-Interaction-Small from Thinking Machines Lab** — 276B MoE (12B active) multimodal model that processes audio, video, and text concurrently rather than turn-by-turn. Leads voice interactivity benchmarks but trails GPT-Realtime-2 on reasoning. Closed research preview coming; wider release later 2026. [The Batch](https://charonhub.deeplearning.ai/built-in-conversational-interactivity/)
-
-- **NVIDIA Nemotron-Labs Diffusion Language Models** — Diffusion-based (not autoregressive) text generation targeting dramatically faster inference. HuggingFace blog covers the approach. Early research, not production-ready yet. [HuggingFace Blog](https://huggingface.co/blog/nvidia/nemotron-labs-diffusion)
-
-- **NVIDIA AnyFlow: any-step video diffusion on Wan2.1** — Flow-map-based framework that lets you dynamically trade compute for quality. Available in 1.3B and 14B variants for T2V and T/I2V via Diffusers. No ComfyUI support yet. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tkmxol/nvidia_released_anyflow_based_on_wan_basically_it/) | [HuggingFace](https://huggingface.co/nvidia/AnyFlow-FAR-Wan2.1-14B-Diffusers)
+- **Qwen3.6-35B-A3B-Uncensored-Genesis-APEX-MTP GGUF** — Community fine-tune with MTP support, tested stable through 200k context in agentic coding sessions. Niche but notable if you run Qwen locally and want an uncensored MTP variant. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tm3toi/qwen3635ba3buncensoredgenesisapexmtp/) | [HuggingFace](https://huggingface.co/LuffyTheFox/Qwen3.6-35B-A3B-Uncensored-Genesis-V2-APEX-MTP-GGUF)
 
 ---
 
 ### 2. Framework & Tooling Updates
 
-- **BeeLlama v0.2.0: DFlash delivers 4–5x speedup on single RTX 3090** — Qwen 3.6 27B hits 164 tok/s median (4.40x over baseline), Gemma 4 31B hits 178 tok/s (4.93x). Adds full Gemma 4 vision support, drafter K/V caching, and upstream GGUF compatibility. Requires a separate DFlash draft model. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkpz2y/beellama_v020_major_dflash_update_single_rtx_3090/) | [GitHub](https://github.com/Anbeeld/beellama.cpp)
+- **llama.cpp b9297: NVFP4 + MTP now work simultaneously** — Previously you had to choose one or the other. This is a meaningful step toward MTP production readiness on NVIDIA hardware. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tlohld/nvfp4_mtp_voilà_on_llamacpp/) | [GitHub release](https://github.com/ggml-org/llama.cpp/releases/tag/b9297)
 
-- **Cohere Transcribe fine-tuned for diarization + timestamps** — Community fine-tune adds speaker identification (up to 32 speakers) and timestamps (0.097s average accuracy) to the best open-source STT model. Free on HuggingFace. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkunbg/i_finetuned_cohere_transcribe_to_support/) | [HuggingFace](https://huggingface.co/syvai/cohere-transcribe-diarize)
+- **llama.cpp server gains built-in native tools** — Experimental `--tools` flag enables `read_file`, `exec_shell_command`, `edit_file`, `apply_diff`, `grep_search`, and more directly in the server. Turns llama-server into a lightweight agent harness with zero external dependencies. No sandboxing yet — don't expose this to untrusted users. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tluma3/llamacpp_server_have_builtin_native_tools_exec/)
+
+- **Command A+ MLX port (PR open)** — Full implementation of Cohere2 MoE architecture for mlx-lm including W4A4 quantization path. BF16→Q8 runs at 22.9 tok/s gen, 57.6 tok/s prompt on Apple Silicon (241GB peak). [GitHub PR #1294](https://github.com/ml-explore/mlx-lm/pull/1294)
 
 ---
 
 ### 3. Infrastructure & Deployment
 
-- **Qwen3.6 27B "pure" Q4_K_M fits in 16GB VRAM, 40 tok/s with MTP** — New quantization method shrinks Q4_K_M from 16.8–17.1 GB to 15.4 GB (MTP) / 15.1 GB (non-MTP). MTP variant hits 40 tok/s TG on RTX 5060 Ti 16GB. Trade-off: prompt processing drops from 715 to 195 tok/s with MTP. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkzk9e/qwen36_27b_pure_quant_40_toks_on_16_gb_vram/) | [HuggingFace](https://huggingface.co/huytd189/Qwen3.6-27B-pure-GGUF)
-
-- **Blackwell PDL (Programmatic Dependent Launch) gives free 5–10% TG boost** — Build llama.cpp with `-DGGML_CUDA_PDL=ON` on CC ≥ 90 GPUs (not Ada). Tested on RTX Pro 4500: Qwen 3.6 35B-A3B gets +6–9% TG, Gemma 4 26B-A4B gets +5%. No PP improvement. May now be enabled by default in b9254+. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkw1su/blackwell_and_pdl_performance_increase/)
-
-- **Experts-first llama.cpp fork for MoE on 12GB VRAM** — Instead of offloading full layers (with all experts) to CPU, this fork loads only the most-used experts into VRAM. On RTX 2060 with Qwen 35B-A3B: 26 tok/s vs 22 tok/s with `-ot` tuning vs 19 tok/s with default `--n-cpu-moe`. Break-even at 42% cache hit rate. Linux/CUDA only, seeking testers. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tknbzh/experts_first_llamacpp/)
+- **Perplexity Comet indirect prompt injection: full attack chain documented** — Hidden Reddit spoiler tags injected instructions that Comet's AI executed: email extraction, OTP theft, session hijacking. Zero user interaction required beyond "summarize this thread." If you're building anything that processes external content through an LLM, this is OWASP LLM01 in the wild. [Towards AI](https://pub.towardsai.net/prompt-injection-in-production-the-2025-perplexity-comet-attack-d73d57eea7ea)
 
 ---
 
 ### 4. Industry Moves
 
-- **DeepSeek announces permanent 75% price cut + $10.29B financing round** — Liang Wenfeng commits to open-source over short-term commercialization. The price cut makes DeepSeek V4 Pro even more cost-dominant for API users. [r/singularity](https://reddit.com/r/singularity/comments/1tkj8l8/deepseek_announces_permanent_price_cut_of_75/) | [Bloomberg](https://www.bloomberg.com/news/articles/2026-05-22/deepseek-founder-declares-agi-goal-as-10-billion-round-advances)
+- **Anthropic Mythos preview surfaces: 10,000+ vulnerabilities found** — Engadget reports Anthropic claims Mythos has already discovered over 10,000 vulnerabilities, linked to "Project Glasswing." Separately, a Mythos 1 model identifier was spotted in Claude Code's internals. Release appears imminent. [Engadget](https://www.engadget.com/2180028/anthropic-claude-mythos-preview-project-glasswing-update/) | [r/singularity](https://reddit.com/r/singularity/comments/1tluzbd/mythos_1_has_been_spotted_in_claude_code/)
 
-- **NVIDIA removes "Gaming" as a revenue category** — Signals the company's full pivot toward data center/AI as the primary business. Gaming revenue will be folded into other segments. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tkw5ri/nvidia_removes_gaming_revenue_category_from/) | [Guru3D](https://www.guru3d.com/story/nvidia-removes-gaming-revenue-category-from-financial-reports/)
-
-- **Anthropic Mythos likely releasing "near future"** — Screenshot circulating suggesting imminent release. [r/singularity](https://reddit.com/r/singularity/comments/1tkyrva/anthropic_likely_to_release_mythos_in_the_near/)
-
-- **OpenAI named Leader in 2026 Gartner Magic Quadrant for Enterprise AI Coding Agents** — Codex recognized for enterprise-scale deployment. [OpenAI Blog](https://openai.com/index/gartner-2026-agentic-coding-leader)
-
-- **Memory shortage repricing consumer electronics** — HBM allocation grew from 2% to ~20% of wafer capacity, squeezing DDR/LPDDR supply. Expect RAM prices to rise across laptops, phones, and desktop builds. Relevant if you're planning hardware purchases. [Simon Willison](https://simonwillison.net/2026/May/22/memory-shortage/#atom-everything) | [Original](https://davidoks.blog/p/ai-is-killing-the-cheap-smartphone)
-
-- **Hermes Agent overtakes OpenClaw on OpenRouter daily token consumption** — Nous Research's open-source agent now leads on usage. Key differentiator: automatic skill-building (self-improvement). Less token-efficient than OpenClaw per some users. [The Batch](https://charonhub.deeplearning.ai/hermes-agent-challenges-openclaw/) | [GitHub](https://github.com/NousResearch/hermes-agent)
+- **Tencent Hunyuan Hy3 preview in use as cheap agentic worker** — User reports running Hy3 (21B active params) at ~$0.18/M input tokens for bulk refactoring alongside Opus, completing 360 routine steps in under an hour. No official release post, but the model is apparently available. [r/singularity](https://reddit.com/r/singularity/comments/1tlj7ou/coding_is_basically_solved_for_the_boring_90_of/)
 
 ---
 
 ### 5. Research Highlights
 
-- **Agent benchmarks don't reflect real work** — Carnegie Mellon/Stanford mapped 10K+ examples from 43 agent benchmarks to U.S. labor statistics. Current benchmarks massively over-index on software development; most economically valuable work is poorly represented. Means: don't trust SWE-bench as a proxy for general agent capability. [arXiv](https://arxiv.org/abs/2603.01203) | [The Batch](https://charonhub.deeplearning.ai/toward-agent-benchmarks-that-reflect-human-work/)
+- **Vision LLMs vs. OCR for long-document QA** — Benchmarked native PDF (vision LLM) against OCR pipelines on 30 image-heavy PDFs: native PDF came 5th of 6 on accuracy (52.0%) and was the most expensive ($0.2552/query). Premium OCR + full-context hit 59.6% at lower cost. Vision specifically underperformed on charts and tables. Native PDF had a 7% irrecoverable failure rate. If you're building document QA, OCR pipelines still win. [Full writeup](https://www.surfsense.com/blog/agentic-rag-vs-long-context-llms-benchmark) | [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tm0cqg/visioncapable_llms_vs_ocr_for_longdocument/)
 
 ---
 
 ### 6. Technology Adoption
 
-- **Superset (YC P26): open-source IDE for running coding agents in parallel** — Manages git worktrees, port allocation, terminal sessions, and diffs across multiple concurrent agents (Claude Code, Codex, OpenCode). Solves the real pain of running 5–10 agents at once. Worth evaluating if you do heavy agent-assisted development. [Hacker News](https://news.ycombinator.com/item?id=48229319) | [GitHub](https://github.com/superset-sh/superset)
+- **tts-bench: comprehensive local TTS benchmark** — Covers all major TTS engines with Windows/Mac results (Linux coming). If you're picking a local TTS solution, this saves you from running your own comparisons. [GitHub](https://github.com/5uck1ess/tts-bench) | [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tm0k2l/tts_benchmark_comparison_all_known_tts_up_until/)
 
-- **Kanbots: open-source Kanban app that runs parallel agents per card** — Each Kanban card can spawn an agent. Scored 220 points on HN. Interesting for task-parallel agentic workflows. [Hacker News](https://www.kanbots.dev/)
+- **Anthropic Cybersecurity Skills repo (754 structured skills)** — Maps to MITRE ATT&CK, NIST CSF 2.0, ATLAS, D3FEND, and NIST AI RMF. Works with Claude Code, Copilot, Cursor, and 20+ platforms. Useful if you're building security-focused agent workflows. Trending on GitHub (281 stars today). [GitHub](https://github.com/mukul975/Anthropic-Cybersecurity-Skills)
 
-- **Models.dev: open-source database of AI model specs, pricing, and capabilities** — Structured, queryable database. Useful for comparing models programmatically. 139 HN points. [GitHub](https://github.com/anomalyco/models.dev)
+---
+
+### 7. Model Rankings Update
+
+No ranking changes today. The Vision LLMs vs OCR benchmark is pipeline-level (OCR vs native PDF), not model-level — it doesn't change individual model rankings for RAG. Command A+ needs independent benchmark data from trusted sources before ranking.
 
 ---
 
 ### 8. Watchlist Updates
 
-- **NEW WATCHLIST: Anthropic Mythos release** — Leak/screenshot suggests "near future" launch. Anthropic's cybersecurity report warned Mythos Preview can find zero-day vulnerabilities, so expect a gated release.
-- **NEW WATCHLIST: Memory price increases** — HBM demand squeezing DDR/LPDDR supply through at least 2027. Plan hardware purchases accordingly.
-- **DeepSeek open-source commitment** — Liang Wenfeng reaffirmed open-source strategy with $10.29B round. Reduces risk of DeepSeek going closed.
+- **Anthropic Mythos release** — Escalating from "near future" to **likely imminent**. Model identifier "Mythos 1" spotted in Claude Code internals. Anthropic publicly claims 10,000+ vulnerabilities found during preview. Two independent signals in one day suggest days-to-weeks, not months.
+
+- **llama.cpp MTP production readiness** — Progressing. NVFP4 + MTP now work together as of b9297, removing a key limitation. Built-in server tools also landed. MTP is getting closer to "just works" status.
+
+- **Meta Llama license enforcement** — No new developments today.
+
+- **Krea 2 open-source release** — No new developments today.
+
+- **AMD Medusa Halo** — No new developments today.
 
 
 
