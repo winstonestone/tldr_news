@@ -1,72 +1,78 @@
-# AI News Daily Briefing — 2026-05-24
+# AI News Daily Briefing — 2026-05-25
 
-# Daily AI Briefing — 2026-05-24
+# Daily AI Briefing — 2026-05-25
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Cohere Command A+ released (218B MoE, 25B active, Apache 2.0)** — 128 experts top-8 routing, sigmoid routing (not softmax), sliding window attention 3:1. Already running on Apple Silicon via MLX at 22.9 tok/s generation. A serious open-weight contender for tool-calling and multi-turn workloads. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tlqxeh/command_a_218b_moe_running_on_apple_silicon_mlx/)
+- **MiMo-V2.5-coder released** — a 128GB model positioned as an alternative to Qwen3.6 and DeepSeek V4 for coding, with "reliable tool calling." Community release, no formal benchmarks yet. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tn3455/mimov25coder/)
 
-- **Qwen3.6-35B-A3B-Uncensored-Genesis-APEX-MTP GGUF** — Community fine-tune with MTP support, tested stable through 200k context in agentic coding sessions. Niche but notable if you run Qwen locally and want an uncensored MTP variant. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tm3toi/qwen3635ba3buncensoredgenesisapexmtp/) | [HuggingFace](https://huggingface.co/LuffyTheFox/Qwen3.6-35B-A3B-Uncensored-Genesis-V2-APEX-MTP-GGUF)
+- **BitCPM-CANN: 1.58-bit ternary QAT models up to 8B** — trained on Ascend NPU, retains 95.7–97.2% of full-precision MiniCPM4 performance at 1B/3B/8B scale across 11 benchmarks. Up to 8x weight memory reduction at inference. Only 4.5% training throughput overhead. Open-weight. Niche hardware (Ascend), but validates extreme quantization-aware training at scale. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmf63y/bitcpmcann_native_158bit_large_language_model/) | [Paper](https://github.com/OpenBMB/MiniCPM/blob/main/docs/BitCPM_CANN.pdf)
 
 ---
 
 ### 2. Framework & Tooling Updates
 
-- **llama.cpp b9297: NVFP4 + MTP now work simultaneously** — Previously you had to choose one or the other. This is a meaningful step toward MTP production readiness on NVIDIA hardware. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tlohld/nvfp4_mtp_voilà_on_llamacpp/) | [GitHub release](https://github.com/ggml-org/llama.cpp/releases/tag/b9297)
+- **llama.cpp PR #22929: checkpoint fix for agentic coding** — fixes full prompt re-processing triggered by context-rewriting tools (like opencode). After this patch, llama.cpp only reprocesses what actually changed instead of the entire 70k+ token context. Significant responsiveness improvement for agentic coding workflows. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tn0jyp/server_fix_checkpoints_creation_by_jacekpoplawski/)
 
-- **llama.cpp server gains built-in native tools** — Experimental `--tools` flag enables `read_file`, `exec_shell_command`, `edit_file`, `apply_diff`, `grep_search`, and more directly in the server. Turns llama-server into a lightweight agent harness with zero external dependencies. No sandboxing yet — don't expose this to untrusted users. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tluma3/llamacpp_server_have_builtin_native_tools_exec/)
+- **hipEngine: ROCm-native inference engine for AMD RDNA3** — new open-source (AGPLv3) engine from shisa-ai targeting 7900 XTX and Strix Halo. No PyTorch dependency on the hot path. Benchmarks show hipEngine with ParoQuant beating llama.cpp HIP on prefill at all context lengths (512–128K), while llama.cpp Vulkan still leads on decode. Worth watching if you're on AMD. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmq4s6/hipengine_fast_native_qwen_36_inference_for_rdna3/) | [GitHub](https://github.com/shisa-ai/hipEngine)
 
-- **Command A+ MLX port (PR open)** — Full implementation of Cohere2 MoE architecture for mlx-lm including W4A4 quantization path. BF16→Q8 runs at 22.9 tok/s gen, 57.6 tok/s prompt on Apple Silicon (241GB peak). [GitHub PR #1294](https://github.com/ml-explore/mlx-lm/pull/1294)
+- **Qwen3.6 27B hitting 1000 tok/s generation on V100s** — at batch 128 concurrent requests. Single-user (batch 1) gets ~80 tok/s decode and 3000 tok/s prefill, no MTP. Demonstrates that older hardware can still serve current models effectively. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmyln6/1000_tps_generation_on_qwen36_27b_with_v100s/)
 
 ---
 
 ### 3. Infrastructure & Deployment
 
-- **Perplexity Comet indirect prompt injection: full attack chain documented** — Hidden Reddit spoiler tags injected instructions that Comet's AI executed: email extraction, OTP theft, session hijacking. Zero user interaction required beyond "summarize this thread." If you're building anything that processes external content through an LLM, this is OWASP LLM01 in the wild. [Towards AI](https://pub.towardsai.net/prompt-injection-in-production-the-2025-perplexity-comet-attack-d73d57eea7ea)
+- **Custom C++ engine for MiniCPM-V 4.6 on Orange Pi AIPro ($149)** — bypasses torch_npu entirely, runs both text and SigLIP vision tower natively on Ascend 310B NPU. Custom AscendC kernels deliver 2x speedup (2.88 → 5.90 tok/s FP16). Open source. Interesting proof-of-concept for budget edge VLM deployment. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmy4g9/wrote_a_custom_c_engine_for_minicpmv_46_on_orange/) | [GitHub](https://github.com/lvyufeng/minicpm-v-4.6-orangepi)
+
+- **768GB Intel Optane DIMMs running 1T-param Kimi K2.5 locally** — ~4 tok/s with a single GPU. Novelty hack, not practical, but demonstrates that cheap decommissioned Optane can make trillion-param models loadable on consumer-ish hardware. [r/singularity](https://reddit.com/r/singularity/comments/1tm1u3l/768gb_of_cheap_intel_optane_dimm_memory_sticks/) | [Tom's Hardware](https://www.tomshardware.com/tech-industry/artificial-intelligence/enthusiast-runs-1-trillion-parameter-llm-from-768gb-of-intel-optane-dimm-memory-sticks-local-kimi-k2-5-install-achieved-roughly-4-tokens-per-second)
+
+- **NVIDIA PiD: pixel diffusion decoder replacing VAE** — plug-and-play decoder that eliminates VAE artifacts. Weights on HuggingFace. Relevant if you work with image generation pipelines. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tn3m6n/nvidia_solved_vae_fast_and_highresolution_latent/) | [Project page](https://research.nvidia.com/labs/sil/projects/pid/) | [HuggingFace](https://huggingface.co/nvidia/PiD)
 
 ---
 
 ### 4. Industry Moves
 
-- **Anthropic Mythos preview surfaces: 10,000+ vulnerabilities found** — Engadget reports Anthropic claims Mythos has already discovered over 10,000 vulnerabilities, linked to "Project Glasswing." Separately, a Mythos 1 model identifier was spotted in Claude Code's internals. Release appears imminent. [Engadget](https://www.engadget.com/2180028/anthropic-claude-mythos-preview-project-glasswing-update/) | [r/singularity](https://reddit.com/r/singularity/comments/1tluzbd/mythos_1_has_been_spotted_in_claude_code/)
+- **Anthropic releases "knowledge-work-plugins"** — open-source repo of plugins for knowledge workers to use in Claude Cowork. 550 GitHub stars on day one. Signals Anthropic pushing Claude beyond coding into general knowledge work. [GitHub](https://github.com/anthropics/knowledge-work-plugins)
 
-- **Tencent Hunyuan Hy3 preview in use as cheap agentic worker** — User reports running Hy3 (21B active params) at ~$0.18/M input tokens for bulk refactoring alongside Opus, completing 360 routine steps in under an hour. No official release post, but the model is apparently available. [r/singularity](https://reddit.com/r/singularity/comments/1tlj7ou/coding_is_basically_solved_for_the_boring_90_of/)
+- **DeepSeek Reasonix** — community-built native coding agent optimized for DeepSeek V4 with high cache hit rates and low cost. Not an official DeepSeek product. [Hacker News](https://esengine.github.io/DeepSeek-Reasonix/)
+
+- **Memory now ~two-thirds of AI chip component costs** — Epoch AI analysis. Reinforces the memory pricing watchlist item. As memory becomes the dominant cost driver, expect continued pressure on consumer GPU pricing. [Epoch AI](https://epoch.ai/data-insights/ai-chip-component-cost-shares) (HN: 387 pts, 396 comments)
+
+- **PapersWithCode revival by HuggingFace** — now supports multiple metrics per benchmark, external papers (not just arXiv), and paper lineage. Useful for tracking SOTA. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tmawv5/paperswithcode_new_features_week_1_p/) | [paperswithcode.co](http://paperswithcode.co)
 
 ---
 
 ### 5. Research Highlights
 
-- **Vision LLMs vs. OCR for long-document QA** — Benchmarked native PDF (vision LLM) against OCR pipelines on 30 image-heavy PDFs: native PDF came 5th of 6 on accuracy (52.0%) and was the most expensive ($0.2552/query). Premium OCR + full-context hit 59.6% at lower cost. Vision specifically underperformed on charts and tables. Native PDF had a 7% irrecoverable failure rate. If you're building document QA, OCR pipelines still win. [Full writeup](https://www.surfsense.com/blog/agentic-rag-vs-long-context-llms-benchmark) | [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tm0cqg/visioncapable_llms_vs_ocr_for_longdocument/)
+- **"Constraint Decay: The Fragility of LLM Agents in Back End Code Generation"** — shows LLM agents progressively lose adherence to constraints during multi-step backend code generation. 240 points on HN. Directly relevant if you're using agents for autonomous coding — validates the intuition that agent reliability degrades over longer tasks. [arXiv](https://arxiv.org/abs/2605.06445)
+
+- **Google DeepMind's AI agent solved 9 of 353 open Erdős problems** — at a few hundred dollars per problem. Impressive demonstration of mathematical reasoning capability, though the practical ceiling is unclear. [r/singularity](https://reddit.com/r/singularity/comments/1tmjdru/google_deepminds_al_agent_autonomously_solved_9/)
+
+- **Auditory prompt injection via inaudible sounds** — hidden audio in YouTube videos/podcasts can trigger AI voice assistants to execute unauthorized commands. New attack class worth knowing about if you build voice-enabled AI features. [r/singularity](https://reddit.com/r/singularity/comments/1tmb7mz/inaudible_sounds_to_humans_can_be_hidden_in/) | [CyberNews](https://cybernews.com/security/ai-voice-bots-hidden-audio-hijack-attacks/)
 
 ---
 
 ### 6. Technology Adoption
 
-- **tts-bench: comprehensive local TTS benchmark** — Covers all major TTS engines with Windows/Mac results (Linux coming). If you're picking a local TTS solution, this saves you from running your own comparisons. [GitHub](https://github.com/5uck1ess/tts-bench) | [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tm0k2l/tts_benchmark_comparison_all_known_tts_up_until/)
+- **pi (earendil-works)** — AI agent toolkit offering coding agent CLI, unified LLM API, TUI & web UI, Slack bot, and vLLM pod support. 456 stars on first trending day. Notable that Armin Ronacher (Flask creator) is already dealing with AI-generated slop issues filed against it — a sign of real adoption. Worth evaluating as a lightweight alternative to heavier agent frameworks. [GitHub](https://github.com/earendil-works/pi) | [Armin Ronacher on slop issues](https://simonwillison.net/2026/May/24/armin-ronacher/#atom-everything)
 
-- **Anthropic Cybersecurity Skills repo (754 structured skills)** — Maps to MITRE ATT&CK, NIST CSF 2.0, ATLAS, D3FEND, and NIST AI RMF. Works with Claude Code, Copilot, Cursor, and 20+ platforms. Useful if you're building security-focused agent workflows. Trending on GitHub (281 stars today). [GitHub](https://github.com/mukul975/Anthropic-Cybersecurity-Skills)
+- **cmux** — Ghostty-based macOS terminal with vertical tabs and notifications designed for running AI coding agents. 696 stars trending. If you run multiple coding agents in parallel, this addresses a real workflow pain point. macOS only. [GitHub](https://github.com/manaflow-ai/cmux)
 
 ---
 
 ### 7. Model Rankings Update
 
-No ranking changes today. The Vision LLMs vs OCR benchmark is pipeline-level (OCR vs native PDF), not model-level — it doesn't change individual model rankings for RAG. Command A+ needs independent benchmark data from trusted sources before ranking.
+No ranking changes today. MiMo-V2.5-coder lacks trusted benchmark data. BitCPM-CANN models are impressive for their quantization approach but target niche hardware. Will update if credible third-party benchmarks appear.
 
 ---
 
 ### 8. Watchlist Updates
 
-- **Anthropic Mythos release** — Escalating from "near future" to **likely imminent**. Model identifier "Mythos 1" spotted in Claude Code internals. Anthropic publicly claims 10,000+ vulnerabilities found during preview. Two independent signals in one day suggest days-to-weeks, not months.
+- **Anthropic Mythos release** — Politico article covers the "cyber models" (Mythos/5.5) and their policy impact in Washington. No new technical details or release date beyond what's already reported. Still watchlist. [Politico](https://www.politico.com/news/2026/05/24/anthropic-openai-mythos-what-to-know-00934668)
 
-- **llama.cpp MTP production readiness** — Progressing. NVFP4 + MTP now work together as of b9297, removing a key limitation. Built-in server tools also landed. MTP is getting closer to "just works" status.
-
-- **Meta Llama license enforcement** — No new developments today.
-
-- **Krea 2 open-source release** — No new developments today.
-
-- **AMD Medusa Halo** — No new developments today.
+- **Memory price increases** — Epoch AI data confirms memory is now ~2/3 of AI chip costs, reinforcing upward pressure on hardware pricing. No resolution. [Epoch AI](https://epoch.ai/data-insights/ai-chip-component-cost-shares)
 
 
 
