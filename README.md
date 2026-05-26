@@ -1,78 +1,80 @@
-# AI News Daily Briefing — 2026-05-25
+# AI News Daily Briefing — 2026-05-26
 
-# Daily AI Briefing — 2026-05-25
+# Daily AI Briefing — May 26, 2026
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **MiMo-V2.5-coder released** — a 128GB model positioned as an alternative to Qwen3.6 and DeepSeek V4 for coding, with "reliable tool calling." Community release, no formal benchmarks yet. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tn3455/mimov25coder/)
+- **NuExtract3 released: 4B VLM for document extraction** — Apache 2.0, based on Qwen3.5-4B. Converts document images to Markdown, extracts structured JSON from PDFs/forms/tables. Runs on 4GB VRAM. Works with vLLM, SGLang, llama.cpp. A strong self-hostable alternative to commercial OCR/extraction APIs. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tn8utn/nuextract3_released_openweight_4b_vlm_for/) | [HuggingFace](https://huggingface.co/spaces/numind/NuExtract3)
 
-- **BitCPM-CANN: 1.58-bit ternary QAT models up to 8B** — trained on Ascend NPU, retains 95.7–97.2% of full-precision MiniCPM4 performance at 1B/3B/8B scale across 11 benchmarks. Up to 8x weight memory reduction at inference. Only 4.5% training throughput overhead. Open-weight. Niche hardware (Ascend), but validates extreme quantization-aware training at scale. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmf63y/bitcpmcann_native_158bit_large_language_model/) | [Paper](https://github.com/OpenBMB/MiniCPM/blob/main/docs/BitCPM_CANN.pdf)
+- **MiniCPM5-1B released** — New 1B-param model from OpenBMB. Ultra-lightweight, details still emerging. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tnafre/minicpm51b/) | [HuggingFace](https://huggingface.co/openbmb/MiniCPM5-1B)
+
+- **Qwen3.5-35B-A3B uncensored heretic v2 with full MTP preserved** — Community release in Safetensors, GGUF, NVFP4, and GPTQ-Int4. Notable: Qwen3.5 is the conversational/creative variant (vs Qwen3.6's agentic/coding focus), so this fills a different niche. Open-weight. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tnzalm/qwen35_35b_a3b_uncensored_heretic_native_mtp/) | [HuggingFace](https://huggingface.co/llmfan46/Qwen3.5-35B-A3B-uncensored-heretic-v2-Native-MTP-Preserved)
 
 ---
 
 ### 2. Framework & Tooling Updates
 
-- **llama.cpp PR #22929: checkpoint fix for agentic coding** — fixes full prompt re-processing triggered by context-rewriting tools (like opencode). After this patch, llama.cpp only reprocesses what actually changed instead of the entire 70k+ token context. Significant responsiveness improvement for agentic coding workflows. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tn0jyp/server_fix_checkpoints_creation_by_jacekpoplawski/)
+- **llama.cpp: CUDA fast Walsh-Hadamard transform (PR #23615)** — 7–9% token generation speedup when using quantized KV cache (`-ctk q8_0 -ctv q8_0`). Benchmarked on 5090 with Gemma4-26B-A4B: tg128 goes from 224 to 244 tok/s. Smaller 1–2% prompt processing gain. Worth pulling if you quantize your KV cache. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tnfqng/cuda_add_fast_walshhadamard_transform_by_am17an/)
 
-- **hipEngine: ROCm-native inference engine for AMD RDNA3** — new open-source (AGPLv3) engine from shisa-ai targeting 7900 XTX and Strix Halo. No PyTorch dependency on the hot path. Benchmarks show hipEngine with ParoQuant beating llama.cpp HIP on prefill at all context lengths (512–128K), while llama.cpp Vulkan still leads on decode. Worth watching if you're on AMD. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmq4s6/hipengine_fast_native_qwen_36_inference_for_rdna3/) | [GitHub](https://github.com/shisa-ai/hipEngine)
-
-- **Qwen3.6 27B hitting 1000 tok/s generation on V100s** — at batch 128 concurrent requests. Single-user (batch 1) gets ~80 tok/s decode and 3000 tok/s prefill, no MTP. Demonstrates that older hardware can still serve current models effectively. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmyln6/1000_tps_generation_on_qwen36_27b_with_v100s/)
+- **vLLM on V100/Volta confirmed dead end for MoE GGUFs** — Detailed real-world report from a 12×V100 cluster: FP8/AWQ/Marlin need SM75+, GPTQ kernels broken on compute 7.0. User moved entirely to llama.cpp for MoE inference. If you're running Volta-era hardware, llama.cpp is your path. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tnn29i/update_on_12x32gb_sxm_v100_cluster_local_ai_for/)
 
 ---
 
 ### 3. Infrastructure & Deployment
 
-- **Custom C++ engine for MiniCPM-V 4.6 on Orange Pi AIPro ($149)** — bypasses torch_npu entirely, runs both text and SigLIP vision tower natively on Ascend 310B NPU. Custom AscendC kernels deliver 2x speedup (2.88 → 5.90 tok/s FP16). Open source. Interesting proof-of-concept for budget edge VLM deployment. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tmy4g9/wrote_a_custom_c_engine_for_minicpmv_46_on_orange/) | [GitHub](https://github.com/lvyufeng/minicpm-v-4.6-orangepi)
-
-- **768GB Intel Optane DIMMs running 1T-param Kimi K2.5 locally** — ~4 tok/s with a single GPU. Novelty hack, not practical, but demonstrates that cheap decommissioned Optane can make trillion-param models loadable on consumer-ish hardware. [r/singularity](https://reddit.com/r/singularity/comments/1tm1u3l/768gb_of_cheap_intel_optane_dimm_memory_sticks/) | [Tom's Hardware](https://www.tomshardware.com/tech-industry/artificial-intelligence/enthusiast-runs-1-trillion-parameter-llm-from-768gb-of-intel-optane-dimm-memory-sticks-local-kimi-k2-5-install-achieved-roughly-4-tokens-per-second)
-
-- **NVIDIA PiD: pixel diffusion decoder replacing VAE** — plug-and-play decoder that eliminates VAE artifacts. Weights on HuggingFace. Relevant if you work with image generation pipelines. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tn3m6n/nvidia_solved_vae_fast_and_highresolution_latent/) | [Project page](https://research.nvidia.com/labs/sil/projects/pid/) | [HuggingFace](https://huggingface.co/nvidia/PiD)
+- **Real-world V100 MoE vs dense decode benchmarks** — From the 12×V100 lawyer cluster running Q8 GGUF with Q4 KV cache on llama.cpp: Gemma4-26B-A4B ~113 tok/s, Qwen3.6-35B-A3B ~82 tok/s, Qwen3.5-122B-A10B ~50 tok/s. Dense 27–32B models only hit 20–28 tok/s. Takeaway: on older GPUs, MoE is the only viable architecture for usable speeds. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tnn29i/update_on_12x32gb_sxm_v100_cluster_local_ai_for/)
 
 ---
 
 ### 4. Industry Moves
 
-- **Anthropic releases "knowledge-work-plugins"** — open-source repo of plugins for knowledge workers to use in Claude Cowork. 550 GitHub stars on day one. Signals Anthropic pushing Claude beyond coding into general knowledge work. [GitHub](https://github.com/anthropics/knowledge-work-plugins)
+- **CVE-2026-28952: macOS kernel vulnerability discovered by Claude** — Apple credits Claude in the security advisory for finding a kernel vuln in macOS 26.5. Significant milestone for AI-assisted security research. [Hacker News](https://news.ycombinator.com/item?id=48275508) | [Apple Support](https://support.apple.com/en-us/127115)
 
-- **DeepSeek Reasonix** — community-built native coding agent optimized for DeepSeek V4 with high cache hit rates and low cost. Not an official DeepSeek product. [Hacker News](https://esengine.github.io/DeepSeek-Reasonix/)
+- **Microsoft Copilot Cowork exfiltrates files** — PromptArmor documents a file exfiltration attack via Copilot Cowork. If you're using Copilot in enterprise, review immediately. [Hacker News](https://news.ycombinator.com/item?id=48275508) | [PromptArmor](https://www.promptarmor.com/resources/microsoft-copilot-cowork-exfiltrates-files)
 
-- **Memory now ~two-thirds of AI chip component costs** — Epoch AI analysis. Reinforces the memory pricing watchlist item. As memory becomes the dominant cost driver, expect continued pressure on consumer GPU pricing. [Epoch AI](https://epoch.ai/data-insights/ai-chip-component-cost-shares) (HN: 387 pts, 396 comments)
+- **Anthropic beats OpenAI on business adoption** — Ramp's AI spending index for May 2026 shows Anthropic ahead in enterprise adoption. [r/singularity](https://reddit.com/r/singularity/comments/1tn86lf/anthropic_beats_openai_on_business_adoption/) | [Ramp](https://ramp.com/leading-indicators/ai-index-may-2026)
 
-- **PapersWithCode revival by HuggingFace** — now supports multiple metrics per benchmark, external papers (not just arXiv), and paper lineage. Useful for tracking SOTA. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tmawv5/paperswithcode_new_features_week_1_p/) | [paperswithcode.co](http://paperswithcode.co)
+- **Wiz integrates with Anthropic's Compliance API** — Cloud security platform Wiz now connects to Anthropic's compliance tooling. Relevant if you're running Claude in regulated environments. [r/artificial](https://reddit.com/r/artificial/comments/1tnvmgt/wiz_integrates_with_anthropics_compliance_api/) | [Wiz Blog](https://www.wiz.io/blog/claude-wiz-integration?2)
+
+- **Financial Times covers Heretic uncensoring tool** — Heretic has been used to create 3,500+ uncensored models with 13M+ downloads. FT was able to remove Llama 3.3 guardrails in under 10 minutes. Expect increased regulatory attention. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tna22m/the_financial_times_has_published_an_article/) | [FT](https://www.ft.com/content/5630ed79-a263-41ed-9a1a-321617ae310e)
+
+- **Uber COO: harder to justify AI token spending** — Signals that enterprise ROI scrutiny on LLM API costs is increasing. [r/artificial](https://reddit.com/r/artificial/comments/1tndgv8/ubers_coo_says_its_getting_harder_to_justify_the/) | [Business Insider](https://www.businessinsider.com/uber-coo-andrew-macdonald-ai-token-spending-harder-justify-2026-5)
+
+- **Norway's 2PB Huawei flash storage for LLM training** — Norway deploying Huawei storage infrastructure at scale for national LLM training. [Hacker News](https://news.ycombinator.com/item?id=48275508) | [Blocks & Files](https://www.blocksandfiles.com/flash/2026/05/22/norways-2-petabytes-of-huawei-flash-storage-and-llm-training/5244910)
 
 ---
 
 ### 5. Research Highlights
 
-- **"Constraint Decay: The Fragility of LLM Agents in Back End Code Generation"** — shows LLM agents progressively lose adherence to constraints during multi-step backend code generation. 240 points on HN. Directly relevant if you're using agents for autonomous coding — validates the intuition that agent reliability degrades over longer tasks. [arXiv](https://arxiv.org/abs/2605.06445)
+- **"Retrying vs Resampling in AI Control"** — Studies safety of retry/resample strategies in coding scaffolds like Claude Code and Codex. Finding: retrying leaks monitor rationale to the model, enabling sneakier attacks. Resampling (5 samples/step) raises safety from 61% to 71% at 0.3% audit budget. Directly relevant if you build agent harnesses. [arXiv:2605.26047](https://arxiv.org/abs/2605.26047v1)
 
-- **Google DeepMind's AI agent solved 9 of 353 open Erdős problems** — at a few hundred dollars per problem. Impressive demonstration of mathematical reasoning capability, though the practical ceiling is unclear. [r/singularity](https://reddit.com/r/singularity/comments/1tmjdru/google_deepminds_al_agent_autonomously_solved_9/)
+- **"Language Models Need Sleep"** — Proposes periodic consolidation of context into persistent fast weights via SSM blocks, then clearing the KV cache. Improves performance on multi-hop reasoning and long-horizon tasks. Could eventually change how we think about context window management. [arXiv:2605.26099](https://arxiv.org/abs/2605.26099v1)
 
-- **Auditory prompt injection via inaudible sounds** — hidden audio in YouTube videos/podcasts can trigger AI voice assistants to execute unauthorized commands. New attack class worth knowing about if you build voice-enabled AI features. [r/singularity](https://reddit.com/r/singularity/comments/1tmb7mz/inaudible_sounds_to_humans_can_be_hidden_in/) | [CyberNews](https://cybernews.com/security/ai-voice-bots-hidden-audio-hijack-attacks/)
+- **METR AI time horizons graph has "numerous severe errors"** — NYU Stern analysis finds METR's benchmark has fabricated human baselines, cash-incentivized slower completion times, and biased sample of benchmarkers. If you've been citing this graph for AI capability timelines, stop. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tnhnh5/the_famous_metr_ai_time_horizons_graph_contains/) | [Transformer News](https://www.transformernews.ai/p/against-the-metr-graph-coding-capabilities-software-jobs-task-ai)
+
+- **"From Model Scaling to System Scaling"** — Makes the case that agent performance is bottlenecked by the harness (memory, context, orchestration, verification), not the model. Introduces CheetahClaws reference harness and compares with Claude Code and OpenClaw. [arXiv:2605.26112](https://arxiv.org/abs/2605.26112v1)
+
+- **OrpQuant: multiplier-free Power-of-Two quantization** — Replaces MAC ops with bit-shifts for edge deployment. LLaMA-2-7B at W3/A16 hits 6.10 perplexity. Full calibration in ~15 minutes. Relevant if you're targeting edge/mobile inference. [arXiv:2605.26092](https://arxiv.org/abs/2605.26092v1)
 
 ---
 
 ### 6. Technology Adoption
 
-- **pi (earendil-works)** — AI agent toolkit offering coding agent CLI, unified LLM API, TUI & web UI, Slack bot, and vLLM pod support. 456 stars on first trending day. Notable that Armin Ronacher (Flask creator) is already dealing with AI-generated slop issues filed against it — a sign of real adoption. Worth evaluating as a lightweight alternative to heavier agent frameworks. [GitHub](https://github.com/earendil-works/pi) | [Armin Ronacher on slop issues](https://simonwillison.net/2026/May/24/armin-ronacher/#atom-everything)
+- **NuExtract3 — worth evaluating for document extraction pipelines.** 4B params, Apache 2.0, runs on 4GB VRAM, works with vLLM/SGLang/llama.cpp. If you're currently paying for cloud OCR or using larger models for structured extraction, this is a serious local alternative. [HuggingFace](https://huggingface.co/spaces/numind/NuExtract3)
 
-- **cmux** — Ghostty-based macOS terminal with vertical tabs and notifications designed for running AI coding agents. 696 stars trending. If you run multiple coding agents in parallel, this addresses a real workflow pain point. macOS only. [GitHub](https://github.com/manaflow-ai/cmux)
+- **Slop Hammer — local AI content detector as Chrome extension.** Fine-tuned Qwen3.5-0.8B runs entirely in-browser via ONNX (~400MB). Sub-1s inference. Useful for quick triage but limited by older training data (struggles with GPT-5.5 output). CC-BY-NC-SA-4.0. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tngkav/ai_content_detector_based_on_qwen_08b_finetuned/) | [Chrome Web Store](https://chromewebstore.google.com/detail/slop-hammer/gfjdmhfokmhedlgfggmmgchpppmhkdgg)
 
----
-
-### 7. Model Rankings Update
-
-No ranking changes today. MiMo-V2.5-coder lacks trusted benchmark data. BitCPM-CANN models are impressive for their quantization approach but target niche hardware. Will update if credible third-party benchmarks appear.
+- **codegraph (+14.1K stars this week)** — Pre-indexed local code knowledge graph for Claude Code, Codex, Cursor, OpenCode, and Hermes Agent. If you're using any of these tools on large codebases, worth trying. [GitHub](https://github.com/colbymchenry/codegraph)
 
 ---
 
 ### 8. Watchlist Updates
 
-- **Anthropic Mythos release** — Politico article covers the "cyber models" (Mythos/5.5) and their policy impact in Washington. No new technical details or release date beyond what's already reported. Still watchlist. [Politico](https://www.politico.com/news/2026/05/24/anthropic-openai-mythos-what-to-know-00934668)
+- **NEW WATCHLIST: vLLM Volta/V100 support** — Confirmed non-functional for MoE GGUFs on SM7.0 (FP8/AWQ/Marlin need SM75+, GPTQ kernels broken). No fix expected. If you have V100s, plan around llama.cpp. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tnn29i/update_on_12x32gb_sxm_v100_cluster_local_ai_for/)
 
-- **Memory price increases** — Epoch AI data confirms memory is now ~2/3 of AI chip costs, reinforcing upward pressure on hardware pricing. No resolution. [Epoch AI](https://epoch.ai/data-insights/ai-chip-component-cost-shares)
+- **NEW WATCHLIST: Grok 0.5T open-weight model** — Elon Musk claims a 0.5 trillion parameter Grok model is coming "next year." Given the Grok-3 open-source release is still pending, treat with skepticism. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tn31d8/next_year_were_getting_05t_model_from_grok/)
 
 
 
