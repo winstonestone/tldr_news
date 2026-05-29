@@ -1,125 +1,132 @@
-# AI News Daily Briefing — 2026-05-28
+# AI News Daily Briefing — 2026-05-29
 
-# AI Daily Briefing — 2026-05-28
+# Daily AI Briefing — May 29, 2026
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Qwen-Image-Bench (Q-Judger) released** — Fine-tuned Qwen3.6-27B for automated text-to-image evaluation. Outputs structured JSON scores across quality, aesthetics, alignment, real-world fidelity, and safety dimensions. Useful if you're building image generation pipelines and need automated quality gates. Open-weight. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpww8m/qwenqwenimagebench_hugging_face/)
-
-- **SWE-rebench updated with 110 fresh Python tasks** (March–May 2026) — Current top performers are GPT-5.5, Opus 4.7, and Cursor Composer 2.5. DeepSeek V4 Pro, Gemini Flash 3.5, and Qwen3.5-397B coming next week. Worth watching for updated agentic coding rankings. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpawlm/swerebench_leaderboard_march_april_and_may_2026/)
-
-- **Qwen3.6 35B-A3B completed FoodTruck Bench** — The small MoE variant can now finish the full agentic benchmark. No score details yet, but notable as a completable local option. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpburm/qwen36_35ba3b_successfully_completed_the/)
-
-- **ITBench-AA: frontier models score below 50%** on enterprise IT agentic tasks — Joint benchmark from Artificial Analysis and IBM covering real enterprise IT workflows. Shows current models still struggle with production IT operations. [Hugging Face Blog](https://huggingface.co/blog/ibm-research/itbench-aa)
-
-- **Gemma-4-Harmonia-31B-Uncensored-Heretic** — Merge of multiple Gemma 4 31B finetunes with KLD 0.0047 and only 9/100 refusals. Available in both Safetensors and GGUFs. Open-weight. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpp2vp/gemma4harmonia31buncensoredheretic_is_out_now_a/) | [HuggingFace](https://huggingface.co/llmfan46/Gemma-4-Harmonia-31B-uncensored-heretic)
-
-- **Hy3 preview scores 87.8 on CHSBO 2025** — Reportedly beating Gemini 3.1 Pro and GPT-5.4 xhigh. No trusted benchmark source yet; treat as unverified. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpu5d3/the_frontier_reasoning_race_is_starting_to_look/)
-
----
+- **Claude Opus 4.8 released** — Anthropic's latest Opus model, available now as `claude-opus-4-8`. Same pricing: $5/$25 per million input/output tokens. Fast mode now $10/$50 (3x cheaper than previous gen fast tier). Key improvements: ~4x less likely to let code flaws pass unremarked (honesty), 84% on Online-Mind2Web (browser/computer-use), improved multi-step tool calling, and better agentic judgment. Anthropic themselves call it "a modest but tangible improvement." New platform features: dynamic workflows in Claude Code (parallel subagents), effort control levels, and mid-message system entries in the Messages API. Open-weight: no (API-only). [Anthropic Blog](https://www.anthropic.com/news/claude-opus-4-8) · [Simon Willison](https://simonwillison.net/2026/May/28/claude-opus-4-8/#atom-everything) · [Towards AI analysis](https://pub.towardsai.net/what-claude-opus-4-8-actually-changes-if-youre-building-agents-413538e8910c)
+  - **Pros:** Honesty gains are real — abstains when uncertain instead of hallucinating. Faster fast-mode pricing helps agentic loops. Mid-message system entries let you inject instructions mid-conversation without hacks.
+  - **Cons:** Incremental over 4.7, not a generation leap. Still the most expensive tier. No context window increase mentioned.
 
 ### 2. Framework & Tooling Updates
 
-- **Security vulnerability found in framework used by vLLM, MCP servers, and other LLM tools** — Details sparse in the post, but if you run vLLM or MCP servers, check your dependencies. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpp2th/vulnerability_found_in_framework_used_by_vllm/)
+- **llm-anthropic 0.25.1** — Simon Willison's LLM plugin adds Opus 4.8 support, fast mode via `-o fast 1`, and now defaults max_tokens to each model's actual maximum instead of 8,192. [Simon Willison](https://simonwillison.net/2026/May/28/llm-anthropic/#atom-everything)
 
-- **NVIDIA CUDA 13.3 released** — No llama.cpp compatibility reports yet. Check before upgrading production inference servers. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tp0vk1/info_nvidia_cuda_133_landed/) | [CUDA Downloads](https://developer.nvidia.com/cuda-downloads)
+- **Datasette 1.0a31** — Now supports write queries and stored queries (renamed from "canned queries") with permission controls. Useful if you use Datasette for internal data tooling. [Simon Willison](https://simonwillison.net/2026/May/29/datasette/#atom-everything)
 
-- **vLLM as ZO fine-tuning runtime: 8.13x speedup** — Paper shows zeroth-order fine-tuning is fundamentally an inference workload. Running LoZO through vLLM's serving runtime on OPT-13B cuts training time from 4.15h to 0.51h with no accuracy loss. Interesting repurposing of vLLM beyond serving. [ArXiv](https://arxiv.org/abs/2605.28760v1)
-
-- **InvokeAI 6.13** — Largest community-driven release. Adds Anima and Qwen Image support, API model integration (GPT Image), prompt expansion, lasso/polygon tools. Entirely volunteer-built after original team was hired by Adobe. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tp7e6w/invokeai_613_just_released_its_largest/) | [GitHub Release](https://github.com/invoke-ai/InvokeAI/releases/tag/v6.13.0)
-
----
+- **Data Formulator 0.7** — Microsoft Research's open-source AI analytics tool. New: enterprise data connectors (databases, warehouses, BI systems, object stores), context-aware agents for data prep/exploration, multimodal iterative refinement. No SQL expertise required. [Microsoft Research](https://www.microsoft.com/en-us/research/blog/data-formulator-0-7-ai-powered-data-analytics-for-enterprise-data/)
 
 ### 3. Infrastructure & Deployment
 
-- **KV cache quantization: q5 & q6 are underrated, q8/q4 is a bad combo** — Thorough benchmarks (38 quant pairs, 3 Qwen 3.6 27B configs) show: `q8_0/q6_0` or `q8_0/q5_1` for high-end; `q5_0/q5_0` when VRAM-tight; avoid `q8/q4` pairing (unbalanced, worse than expected). Also: bf16 KV cache on Q4 model weights is the wrong trade. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tp9d1w/kv_cache_quant_benchmarks_q5_q6_are_underrated/) | [Full article](https://anbeeld.com/articles/kv-cache-quantization-benchmarks-for-long-context)
+- **TDS: Building local LLM agents with vLLM and long-context infrastructure** — Practical write-up on standing up a scientific agent using open-weight models, vLLM serving, and long-context handling. Worth reading if you're running local agent stacks. [Towards Data Science](https://towardsdatascience.com/the-infrastructure-behind-making-local-llm-agents-actually-useful/)
 
-- **AI-generated CUDA kernels silently break training** — NVIDIA's SOL-ExecBench submissions pass verification but cause divergence in real training loops. Root cause: bf16 accumulation instead of fp32 in embedding gradients. Bug only manifests with real text distributions + SGD — vanishes under uniform tokens or AdamW. If you're using AI-generated kernels, this is a must-read. [r/MachineLearning](https://reddit.com/r/MachineLearning/comments/1tpaw6x/aigenerated_cuda_kernels_silently_break_training/) | [Blog](https://www.doubleai.com/research/warpspeed-approaches-speed-of-light-on-blackwell)
+- **VideoMLA: 92.7% KV memory reduction for video diffusion** — Applies Multi-Head Latent Attention to video diffusion models. Achieves 1.23x throughput improvement on B200 GPUs. The technique of replacing per-head KV with shared low-rank latents has implications beyond video — worth watching for LLM serving adoption. [arXiv](https://arxiv.org/abs/2605.30351v1)
 
-- **Wan 2.2 I2V W4A4 quantization** — Timestep-Aware SVDQuant-GPTQ applied to Wan 2.2, single unified model instead of high/low split. Claims much more memory-efficient with minimal quality loss vs bf16 MoE. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tpcm59/a_wan_22_posttraining_quant_1_model_instead_of/) | [GitHub](https://github.com/CGCL-codes/Wan2.2-I2V-A14B-W4A4)
-
-- **Ω-QVLA: uniform W4A4 for VLA models** — First training-free post-training quantization compressing both LLM backbone and diffusion action head to W4A4. 71.3% memory reduction, matches or exceeds FP16 on LIBERO manipulation tasks. Relevant if you're deploying robotic VLA models on-device. [ArXiv](https://arxiv.org/abs/2605.28803v1)
-
----
+- **AWS flat network architecture (RNG) now default for new builds** — Amazon replaced fat-tree datacenter topology with quasi-random "flat" networks. 69% fewer routers, up to 33% better throughput, projected 40% reduction in network equipment power. If you're on AWS, your workloads likely already run on this. [Amazon Science](https://www.amazon.science/blog/how-flat-is-replacing-fat-in-aws-data-center-networks)
 
 ### 4. Industry Moves
 
-- **Simon Willison: Anthropic and OpenAI have found product-market fit** — Anthropic rumored to hit first profitable quarter. Enterprise API bills spiking as staff adoption of coding agents accelerates. Willison argues April was an inflection point. 869 points on HN. [Simon Willison](https://simonwillison.net/2026/May/27/product-market-fit/) | [Hacker News](https://news.ycombinator.com/)
+- **Anthropic raises $65B Series H at $965B valuation** — Run-rate revenue hit $47B earlier this month, up from $14B in February 2026 and $9B at end of 2025. That's 5x growth in 5 months. [Anthropic Blog](https://www.anthropic.com/news/series-h) · [Simon Willison](https://simonwillison.net/2026/May/29/anthropic/#atom-everything)
 
-- **DuckDuckGo search up 28% after Google's AI mode push** — Users actively seeking AI-free search alternatives. [Hacker News](https://www.pcgamer.com/hardware/duckduckgos-ai-free-search-saw-nearly-28-percent-more-visits-in-the-week-following-googles-insistence-that-people-love-ai-mode/)
+- **Anthropic opens Milan office** — Enterprise, research, and developer support for Italian market. Minor signal of European expansion. [Anthropic Blog](https://www.anthropic.com/news/milan-office-opening)
 
-- **YouTube will automatically label AI-generated videos** — Moving from self-disclosure to automated detection. [YouTube Blog](https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/)
+- **Microsoft data suggests AI is more expensive than hiring people** — Early signal worth tracking for anyone building ROI cases for AI adoption internally. [Yahoo Finance via HN](https://finance.yahoo.com/sectors/technology/articles/microsoft-data-suggests-using-ai-225900743.html)
 
-- **SQLite adds AGENTS.md, explicitly rejects agentic code contributions** — Will accept agentic bug reports with reproducible test cases only. AI-generated bug reports split into separate forum. Strengthened language from "does not (currently) accept" to "does not accept." [Simon Willison](https://simonwillison.net/2026/May/27/sqlite-agents/#atom-everything) | [GitHub](https://github.com/sqlite/sqlite/blob/master/AGENTS.md)
+- **Protestware targeting AI coding agents** — Open-source maintainers are adding hostile code specifically designed to break AI agents that consume their packages. If you run autonomous agents against open-source repos, this is a real attack surface. [HN](https://nesbitt.io/2026/05/28/protestware-for-coding-agents.html)
 
-- **Robinhood launches credit card for AI agents** with 3% cash back — Designed for autonomous AI agent spending. [Fortune](https://fortune.com/2026/05/27/robinhood-ai-agents)
-
-- **Cisco partners with OpenAI on Codex** for enterprise engineering and AI Defense. [OpenAI Blog](https://openai.com/index/cisco)
-
-- **Warp using GPT-5.5** to coordinate coding agents across local, cloud, and open-source workflows. [OpenAI Blog](https://openai.com/index/warp)
-
-- **Trump appoints Pam Bondi to White House AI panel.** [Axios](https://www.axios.com/2026/05/27/pam-bondi-white-house-ai)
-
-- **Open-source projects hardening AI policies** — ripgrep published an AI policy; Zig announced a no-AI policy with $670K foundation funding. Trend of maintainers drawing explicit boundaries. [ripgrep](https://github.com/BurntSushi/ripgrep/blob/master/AI_POLICY.md) | [Zig](https://www.youtube.com/watch?v=iqddnwKF8HQ)
-
----
+- **Cloudflare ships AI code review at scale** — Orchestration patterns for running AI-powered code review across large codebases. [Cloudflare Blog](https://blog.cloudflare.com/ai-code-review/)
 
 ### 5. Research Highlights
 
-- **LiveBrowseComp: LLM search agents mostly verify what they already know** — 44.5% of BrowseComp questions answered without tools. New benchmark with answers from last 90 days drops all agents below 2% closed-book accuracy. If you're building search-augmented agents, you need to test against genuinely novel information. [ArXiv](https://arxiv.org/abs/2605.28721v1)
+- **Reasoning in Memory (RiM)** — Replaces autoregressive chain-of-thought with fixed "memory block" tokens processed in a single forward pass. Matches or exceeds existing latent reasoning methods while avoiding the cost of generating reasoning tokens. If this generalizes, it could dramatically cut inference cost for reasoning tasks. [arXiv](https://arxiv.org/abs/2605.30343v1)
 
-- **CORE: Contrastive Reflection for rapid reasoning improvement** — Non-parametric method that compares successful/failed reasoning traces to generate reusable insights. Outperforms GRPO with as few as 5 training samples and fewer rollouts. Cheaper alternative to RLVR if you need quick domain adaptation. [ArXiv](https://arxiv.org/abs/2605.28742v1)
+- **Entropy-Cut Metropolis-Hastings** — Uses next-token entropy to identify key decision points in reasoning traces and resamples from there. Improves over RL-trained models on MATH500, HumanEval, GPQA Diamond, and AIME26 — without any additional training. Practical implication: better reasoning from base models via smarter sampling. [arXiv](https://arxiv.org/abs/2605.30327v1)
 
-- **CCO: Calibrated Collective Oversight for agentic AI** — Aggregates weak overseers to constrain misaligned agents using conformal decision theory. On modified SWE-bench, weaker overseers successfully constrain adversarial agents. Practical if you're building agent pipelines that need safety guarantees. [ArXiv](https://arxiv.org/abs/2605.28807v1)
+- **Self-Trained Verification (STV)** — Trains a verifier by exploiting the asymmetry between catching errors with and without a reference solution. 14x accuracy lift on scientific reasoning (1.5% → 21%). Verifier-in-the-loop training yields 33% gain on top of RL-converged generators. Directly useful for anyone building verification loops. [arXiv](https://arxiv.org/abs/2605.30290v1)
 
-- **Code as a Weapon: consensus-labeled malicious code prompt bank** — 4,748 executable malicious code requests and 1,923 harmful knowledge requests, labeled by 5-judge consensus (κ=0.767). First proper instrument for testing coding model refusal rates. [ArXiv](https://arxiv.org/abs/2605.28734v1)
+- **Physics Is All You Need? (Claude Code case study)** — Quantified study of a physicist supervising Claude Code for 57 sessions. Key finding: the agent spent 33/57 sessions optimizing within the wrong architecture and couldn't self-correct. It also committed a "fudge factor" that passed all tests but was physically meaningless. Supervision design, not model capability, determined trustworthiness. Essential reading for anyone letting agents run autonomously on domain-specific code. [arXiv](https://arxiv.org/abs/2605.30353v1)
 
-- **MemTrace: tracing errors in LLM memory systems** — Framework that turns memory pipelines into executable graphs for debugging. Attribution signals guide prompt optimization, boosting performance up to 7.62%. Useful if you're building RAG or memory-augmented agents. [ArXiv](https://arxiv.org/abs/2605.28732v1)
-
----
+- **GPIC: 28-trillion-pixel permissive image corpus** — 100M training images, all permissively licensed for commercial use, hosted on HuggingFace. Useful if you need a large, legally clean image dataset. [arXiv](https://arxiv.org/abs/2605.30341v1)
 
 ### 6. Technology Adoption
 
-- **claude-code-harness** (87 stars today) — Dedicated development harness for Claude Code implementing autonomous Plan→Work→Review cycles. Worth evaluating if you're running Claude Code on larger projects and want more structured agent workflows. [GitHub](https://github.com/Chachamaru127/claude-code-harness)
+- **Compound Engineering plugin for Claude Code/Codex/Cursor** — 184 GitHub stars today. Implements the "compound engineering" pattern (parallel agent orchestration). Worth evaluating if you're running multi-agent coding workflows. [GitHub](https://github.com/EveryInc/compound-engineering-plugin)
 
-- **DEMON: real-time audio diffusion engine** — StreamDiffusion-style approach for music with ACEStep 1.5. 12.3 gen/sec of 60-second music on 5090, 4.2/s on 3090. Includes distilled VAE and 200 LoRAs. Open source. Niche but impressive if you need real-time audio generation. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tpa6tj/demon_diffusion_engine_for_musical_orchestrated/)
+- **"Various LLM Smells" (308 HN points)** — Catalog of anti-patterns and tells in LLM-generated code. Useful reference for code review when working with AI-generated output. [Blog](https://shvbsle.in/various-llm-smells/)
 
-- **Dreamverse open-sourced** — Real-time 1080p video gen/editing. Requires B200 currently, but Wan2.1 1.3B on single 5090 (<2s) coming soon. Docker images included. [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tpfbrl/running_realtime_1080p_video_generation_and/) | [GitHub](https://github.com/hao-ai-lab/FastVideo/tree/main/apps/dreamverse)
+- **Claude Code undocumented configuration options** — Community deep-dive into the Claude Code source revealing configuration flags not in the official docs. 88 HN points. [Blog](https://buildingbetter.tech/p/i-read-the-claude-code-source-code)
 
-- **Fully in-browser container builds** — Container images built entirely in-browser without Docker daemon. Relevant to Docker workflows for edge cases where you can't run a daemon. Early-stage. [Hacker News](https://ochagavia.nl/blog/fully-in-browser-container-builds/)
+- **Ktx: executable context layer for data agents** — Open-source tool for making SQL-generating agents more accurate by injecting business logic context. Solves real problems (stale columns, join fanouts, attribution logic mismatches). Worth evaluating if you're building data agents. [GitHub](https://github.com/Kaelio/ktx)
 
-- **103B-token Usenet corpus (1980–2013)** — Zero AI contamination pre-training/fine-tuning data. 408M posts, 96.6% English. Samples free, full corpus licensable. Already has a Gemma 4 LoRA proof of concept. Worth evaluating if you need genuinely human-only training data. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tphhqk/i_built_a_103btoken_usenet_corpus_19802013_preweb/)
+### 7. Model Rankings Update
 
----
+Opus 4.8 replaces 4.7 in Chat/Conversation based on Anthropic's own benchmarks and early community reports. For Agentic Coding, Opus 4.8's improvements (Terminal-Bench 2.1, better tool calling, 4x fewer unremarked code flaws) warrant taking the top spot from 4.6, pending independent FoodTruck Bench confirmation.
+
+```ranking
+TASK: Agentic Coding
+| Rank | Model | Reason | Weights | Source |
+1. Claude Opus 4.8 — Terminal-Bench 2.1 gains, 4x fewer unremarked code flaws, 84% Online-Mind2Web | closed (API-only) | Anthropic Blog
+2. GPT-5.2 — Strong agentic median, but $14/M output pricing | closed (API-only) | r/LocalLLaMA FoodTruck Bench
+3. DeepSeek V4 Pro — Matches GPT-5.2 median at 17x less cost, tightest variance | open-weight | r/LocalLLaMA FoodTruck Bench
+4. Grok 4.3 — Ties DeepSeek median but wider variance, more food waste | closed (API-only) | r/LocalLLaMA FoodTruck Bench
+5. Qwen 3.6 27B — Finds bugs missed by frontier models via extended reasoning; best local option | open-weight | r/LocalLLaMA user reports
+```
+
+```ranking
+TASK: Chat / Conversation
+| Rank | Model | Reason | Weights | Source |
+1. Claude Opus 4.8 — Honesty improvements (abstains over hallucinating), lowest incorrect-rate across all benchmarks | closed (API-only) | Anthropic Blog, System Card
+2. GPT-5.5 — Fast, strong general chat but expensive | closed (API-only) | r/LocalLLaMA community
+3. DeepSeek V4 Pro — Frontier quality at Chinese pricing | open-weight | r/LocalLLaMA FoodTruck Bench
+4. MiniMax-M2.7 — "Accessible Sonnet at home" per community consensus | open-weight | r/LocalLLaMA Best Local LLMs Apr 2026
+5. Qwen 3.6 27B — Strong reasoning, multimodal, runs on single 48GB GPU | open-weight | r/LocalLLaMA
+```
+
+```ranking
+TASK: Function Calling
+| Rank | Model | Reason | Weights | Source |
+1. Claude Opus 4.8 — "Cleaner multi-step tool calling" with mid-message system entries for precise control | closed (API-only) | Anthropic Blog
+2. Claude Opus 4.7 — Previous best, now superseded by 4.8 | closed (API-only) | Anthropic Blog
+3. GPT-5.2 — Reliable structured output, wide tool-use ecosystem | closed (API-only) | r/LocalLLaMA community
+4. DeepSeek V4 Pro — Strong tool use at fraction of cost | open-weight | r/LocalLLaMA
+5. Qwen 3.6 27B — Best local option for function calling | open-weight | r/LocalLLaMA
+```
 
 ### 8. Watchlist Updates
 
-- **vLLM security vulnerability** — New vulnerability reported in a framework underlying vLLM, MCP servers, and other LLM tools. No CVE details in the post yet. Monitor closely if running vLLM in production. [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpp2th/vulnerability_found_in_framework_used_by_vllm/)
-- **Qwen 3.7** — Still no release. Mentioned in passing ("while we wait for Qwen 3.7 to drop"). [r/LocalLLaMA](https://reddit.com/r/LocalLLaMA/comments/1tpcv2q/260kparam_llm_running_on_an_emulated_90s_cpu/)
-- **Krea 2 open source** — Announced as "soon." [r/StableDiffusion](https://reddit.com/r/StableDiffusion/comments/1tpwu1k/krea_2_open_source_soon/)
-- NEW WATCHLIST: **SWE-rebench adding DeepSeek V4 Pro, Gemini Flash 3.5, Qwen3.5-397B** — Results expected within a week, could shift agentic coding rankings.
-- NEW WATCHLIST: **Hy3 preview** — Claimed 87.8 on CHSBO, needs trusted benchmark verification.
-- NEW WATCHLIST: **CUDA 13.3 compatibility** — No llama.cpp/vLLM compatibility reports yet.
+- **Qwen 3.7** — Still no release. The Towards AI article references "Qwen 3.7 Max" working for 35 hours on a long-horizon task, suggesting it exists in some form but remains unavailable for general use. [Towards AI](https://pub.towardsai.net/qwen-3-7-max-worked-for-35-hrs-straight-and-the-results-were-mind-blowing-839bf561b89a)
+- **MiniMax M3** — No new details today beyond original announcement.
+- **Gemini 3.5 Pro "Extra High" thinking** — Google I/O 2026 recap article mentions Gemini 3.5 Flash but no confirmation of "Extra High" thinking shipping. [Google Blog](https://blog.google/innovation-and-ai/technology/ai/io-2026-keynote-moment-videos/)
+- **China AI talent travel restrictions** — No new updates.
+- **NEW WATCHLIST: Protestware targeting AI agents** — Emerging pattern of open-source packages adding hostile code for AI coding agents. Could escalate. [HN](https://nesbitt.io/2026/05/28/protestware-for-coding-agents.html)
 
 
 
 ---
 *Current Model Rankings*
 
-Agentic Coding
-_Updated: 2026-05-05_
-1. *Claude Opus 4.6* — Highest peak on FoodTruck Bench agentic workload | _closed (API-only)_ | r/LocalLLaMA FoodTruck Bench
+*Agentic Coding* (UPDATED)
+_Updated: 2026-05-29_
+1. *Claude Opus 4.8* — Terminal-Bench 2.1 gains, 4x fewer unremarked code flaws, 84% Online-Mind2Web | _closed (API-only)_ | Anthropic Blog
 2. *GPT-5.2* — Strong agentic median, but $14/M output pricing | _closed (API-only)_ | r/LocalLLaMA FoodTruck Bench
 3. *DeepSeek V4 Pro* — Matches GPT-5.2 median at 17x less cost, tightest variance | _open-weight_ | r/LocalLLaMA FoodTruck Bench
 4. *Grok 4.3* — Ties DeepSeek median but wider variance, more food waste | _closed (API-only)_ | r/LocalLLaMA FoodTruck Bench
 5. *Qwen 3.6 27B* — Finds bugs missed by frontier models via extended reasoning; best local option | _open-weight_ | r/LocalLLaMA user reports
 
-Chat / Conversation
-_Updated: 2026-05-05_
-1. *Claude Opus 4.7* — Latest Opus, strongest overall quality | _closed (API-only)_ | Anthropic Blog
+*Chat / Conversation* (UPDATED)
+_Updated: 2026-05-29_
+1. *Claude Opus 4.8* — Honesty improvements (abstains over hallucinating), lowest incorrect-rate across all benchmarks | _closed (API-only)_ | Anthropic Blog, System Card
 2. *GPT-5.5* — Fast, strong general chat but expensive | _closed (API-only)_ | r/LocalLLaMA community
 3. *DeepSeek V4 Pro* — Frontier quality at Chinese pricing | _open-weight_ | r/LocalLLaMA FoodTruck Bench
 4. *MiniMax-M2.7* — "Accessible Sonnet at home" per community consensus | _open-weight_ | r/LocalLLaMA Best Local LLMs Apr 2026
 5. *Qwen 3.6 27B* — Strong reasoning, multimodal, runs on single 48GB GPU | _open-weight_ | r/LocalLLaMA
+
+*Function Calling* (UPDATED)
+_Updated: 2026-05-29_
+1. *Claude Opus 4.8* — "Cleaner multi-step tool calling" with mid-message system entries for precise control | _closed (API-only)_ | Anthropic Blog
+2. *Claude Opus 4.7* — Previous best, now superseded by 4.8 | _closed (API-only)_ | Anthropic Blog
+3. *GPT-5.2* — Reliable structured output, wide tool-use ecosystem | _closed (API-only)_ | r/LocalLLaMA community
+4. *DeepSeek V4 Pro* — Strong tool use at fraction of cost | _open-weight_ | r/LocalLLaMA
+5. *Qwen 3.6 27B* — Best local option for function calling | _open-weight_ | r/LocalLLaMA
