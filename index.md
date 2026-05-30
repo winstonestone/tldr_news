@@ -3,6 +3,7 @@ layout: home
 title: AI News Daily Briefings
 ---
 
+- [2026-05-30](2026/05/30/daily-briefing.html)
 - [2026-05-29](2026/05/29/daily-briefing.html)
 - [2026-05-28](2026/05/28/daily-briefing.html)
 - [2026-05-27](2026/05/27/daily-briefing.html)
