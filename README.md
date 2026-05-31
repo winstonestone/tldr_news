@@ -1,62 +1,48 @@
-# AI News Daily Briefing — 2026-05-30
+# AI News Daily Briefing — 2026-05-31
 
-# Daily AI Briefing — 2026-05-30
+# Daily AI Briefing — 2026-05-31
 
 ---
 
-### 1. New Models & Benchmarks
+### 4. Industry Moves
 
-- **Liquid AI releases LFM2.5 8B-A1B** — 8B-parameter MoE with only 1B active params, trained on 38 trillion tokens. Targets efficient on-device and edge deployment. Open-weight. [Liquid AI Blog](https://www.liquid.ai/blog/lfm2-5-8b-a1b) | [HN (189 pts)](https://www.liquid.ai/blog/lfm2-5-8b-a1b)
-  - *Pros:* Extreme efficiency (1B active), massive training data, good for resource-constrained serving
-  - *Cons:* 8B total params limits ceiling; no trusted benchmark rankings yet (LMSYS/Artificial Analysis)
+- **OpenRouter raises $113M Series B** — The LLM routing/aggregation platform continues to grow as a single API for accessing multiple model providers. Significant validation of the multi-provider routing pattern. [OpenRouter](https://openrouter.ai/announcements/series-b) | [HN (418 pts)](https://openrouter.ai/announcements/series-b)
 
-- **Mistral AI Now Summit announcements** — Summit drew significant attention (375 HN points, 153 comments). Check notes for new model/API details. [Notes from Summit](https://koenvangilst.nl/lab/mistral-ai-now-summit) | [HN](https://koenvangilst.nl/lab/mistral-ai-now-summit)
+- **Anthropic's "run-rate revenue" uses a 28-day × 13 multiplier** — Reuters Breakingviews revealed Anthropic calculates consumption-based run-rate by multiplying the last 28 days by 13, not 12. Simon Willison flags this as a meaningful accounting detail worth noting when evaluating Anthropic's reported revenue figures. [Simon Willison](https://simonwillison.net/2026/May/31/anthropic-run-rate/#atom-everything) | [Reuters Breakingviews](https://www.reuters.com/commentary/breakingviews/anthropic-gives-lesson-ai-revenue-hallucination-2026-03-10/)
 
-- **NVIDIA LocateAnything** — Visual grounding model with parallel box decoding; designed as an agent primitive for spatial reasoning tasks. [Towards AI](https://pub.towardsai.net/nvidia-drops-a-model-locateanything-e0c50de7326d?source=rss----98111c9905da---4)
-
-### 2. Framework & Tooling Updates
-
-- **Tiny-vLLM: C++/CUDA reimplementation of vLLM** — High-performance LLM inference engine, 149 HN points. Worth watching if you want a lighter-weight alternative or want to understand vLLM internals at the code level. Not a replacement for production vLLM yet. [GitHub](https://github.com/jmaczan/tiny-vllm) | [HN](https://github.com/jmaczan/tiny-vllm)
-
-- **Dynamic Workflows in Claude Code** — New feature for Claude Code enabling dynamic, multi-step workflows. Relevant if you use Claude Code as your primary coding agent. [Claude Blog](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code) | [HN (170 pts)](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)
-
-- **LiteParse (LlamaIndex)** — Fast open-source document parser, 701 GitHub stars today. If you're building RAG pipelines, this is worth evaluating as a PDF/doc ingestion step. [GitHub](https://github.com/run-llama/liteparse)
+---
 
 ### 3. Infrastructure & Deployment
 
-- **Real-time LLM inference at 3,000 tokens/s per request on standard GPUs** — kog.ai details their approach to hitting 3k tok/s on commodity hardware. Directly relevant if you're optimizing vLLM or self-hosting. [Blog](https://blog.kog.ai/real-time-llm-inference-on-standard-gpus-3-000-tokens-s-per-request/) | [HN (204 pts)](https://blog.kog.ai/real-time-llm-inference-on-standard-gpus-3-000-tokens-s-per-request/)
+- **Rotary GPU: running large MoE models under limited VRAM** — New paper proposes a local execution strategy for Mixture-of-Experts models that rotates expert groups through GPU memory. Directly relevant if you're trying to serve large MoE models (like Qwen 3.7 or DeepSeek) on consumer/workstation GPUs. [arXiv](https://arxiv.org/abs/2605.29135) | [HN (38 pts)](https://arxiv.org/abs/2605.29135)
 
-- **Gemini 3.5 Flash pricing: 3x its predecessor** — The Batch highlights that Gemini 3.5 Flash costs 3x what Gemini 3 Flash did, part of a broader industry trend of rising per-token costs even for "efficiency" models. Factor this into cost modeling if you're comparing providers. [The Batch](https://charonhub.deeplearning.ai/gemini-3-5-flash-pairs-smarts-with-speed/)
+- **Qdrant TurboQuant: geometry-preserving vector quantization** — TDS deep-dive on Qdrant's new quantization method that aims to compress vectors without breaking nearest-neighbor geometry. Worth evaluating if you run Qdrant for RAG and want to cut memory costs without sacrificing retrieval quality. [Towards Data Science](https://towardsdatascience.com/qdrant-turboquant-explained-is-turboquant-the-silver-bullet/)
 
-### 4. Industry Moves
+---
 
-- **EU delays and weakens parts of the AI Act** — High-risk AI system requirements pushed back; some provisions deleted. Less compliance burden for European AI deployments near-term. [The Batch](https://charonhub.deeplearning.ai/europe-pauses-some-ai-regulations/) | [European Parliament](https://www.europarl.europa.eu/news/en/press-room/20260427IPR42011/ai-act-deal-on-simplification-measures-ban-on-nudifier-apps)
+### 2. Framework & Tooling Updates
 
-- **AI-driven internet traffic nearly tripled in 2025** — Human Security report based on 1Q+ interactions. Agent and crawler traffic surging, especially in retail, streaming, and travel. Relevant if you're building APIs — expect more non-human callers. [The Batch](https://charonhub.deeplearning.ai/agents-surf-the-ai-written-web/)
+- **Anthropic publishes detailed sandbox architecture docs for Claude** — Covers gVisor (Claude.ai), Seatbelt/Bubblewrap (Claude Code), and full VMs (Cowork). Includes specific exfiltration vectors they caught. If you use Claude Code or Cowork, this is the most transparent sandbox documentation from any AI vendor. Also highlights the open-source [Anthropic Sandbox Runtime (srt)](https://github.com/anthropic-experimental/sandbox-runtime) tool as production-ready. [Simon Willison](https://simonwillison.net/2026/May/30/how-we-contain-claude/#atom-everything) | [Anthropic Engineering](https://www.anthropic.com/engineering/how-we-contain-claude)
 
-- **CAPTCHAs can still detect AI agents** — Research showing current CAPTCHA methods remain effective against AI agents. Relevant if you're building agents that interact with web services. [Roundtable AI](https://research.roundtable.ai/captchas-detect-ai/) | [HN (74 pts)](https://research.roundtable.ai/captchas-detect-ai/)
+---
 
 ### 5. Research Highlights
 
-- **Meta STROKES: Staged image generation with plan-check-revise loops** — Fine-tuning method that breaks image composition into discrete stages, improving spatial relationships and attribute accuracy. Practical if you're doing structured image generation. [arxiv](https://arxiv.org/abs/2604.04746) | [The Batch](https://charonhub.deeplearning.ai/planning-generated-images-in-stages/)
+- **"Embeddings Aren't Magic: The Predictable Failure Modes of RAG Retrieval"** — Catalogs where standard vector search silently fails: negation, exact identifiers, company-specific acronyms. Proposes hybrid retrieval strategies. If you run RAG in production, this is a practical checklist of blind spots. [TDS](https://towardsdatascience.com/embeddings-arent-magic-the-predictable-failure-modes-of-rag-retrieval-enterprise-document-intelligence-vol-1-2/)
 
-- **Evolution of LLM Inference: Decoding Algorithms (Part 1)** — Solid overview from autoregressive to speculative decoding, tree-based verification, and multi-head prediction. Good reference if you're tuning vLLM serving parameters. [Towards AI](https://pub.towardsai.net/the-evolution-of-llm-inference-decoding-algorithms-part-1-13ba81396cf7?source=rss----98111c9905da---4)
+- **Rotary GPU (arXiv 2605.29135)** — Proposes rotating expert shards through limited VRAM to run large MoE models locally. One-liner: if this works at scale, self-hosting 100B+ MoE models on a single 24GB GPU becomes viable. [arXiv](https://arxiv.org/abs/2605.29135)
+
+---
 
 ### 6. Technology Adoption
 
-- **OpenClaw: XDR-style security bot tutorial** — Detailed walkthrough of using OpenClaw as a 24/7 log watcher with anomaly scoring, correlation, and Telegram alerts on a $28/mo NUC. Shows the framework maturing for non-chatbot agent use cases. [Towards AI](https://pub.towardsai.net/building-an-xdr-style-security-bot-in-openclaw-to-watch-your-logs-24-7-587876f3898d?source=rss----98111c9905da---4)
+- **Komi-learn: continuous memory and self-improvement for coding agents** — Open-source library that gives coding agents persistent memory across sessions so they learn from past mistakes. Early stage (14 HN points), but addresses a real pain point in agentic coding — agents repeating the same errors. Worth watching, not adopting yet. [GitHub](https://github.com/kurikomi-labs/komi-learn)
 
-- **Zot: new coding agent harness** — "Yet another coding agent harness" with 81 HN points and 71 comments. If you're evaluating agent frameworks beyond Claude Code/Codex, take a look. [zot.sh](https://www.zot.sh) | [HN](https://www.zot.sh)
+- **Open Envelope: open schema for defining AI agent teams** — Apache 2.0 JSON Schema for declaratively defining multi-agent systems with roles, handoffs, human-in-the-loop gates, and network-level access policies. Registered in SchemaStore (VS Code autocomplete works). Interesting if you're building multi-agent systems and want a portable definition format — think Dockerfile but for agent teams. Too early for production but the right idea. [Open Envelope](https://openenvelope.org/docs/schema/)
 
-- **Stable WorldModel** — Open platform for reproducible world model research, 362 GitHub stars today. Niche but worth watching if you work on simulation or embodied AI. [GitHub](https://github.com/galilai-group/stable-worldmodel)
+---
 
-- **RAG cost control layer (TDS)** — Practical architecture combining semantic caching, query routing, token budgeting, and circuit breaking. Claims 85% cost reduction. Worth reading if your RAG costs are growing. [TDS](https://towardsdatascience.com/rag-is-burning-money-i-built-a-cost-control-layer-to-fix-it/)
-
-### 8. Watchlist Updates
-
-- **Protestware targeting AI agents** — No new updates today. Still active concern.
-- **vLLM security vulnerability** — No resolution announced. Tiny-vLLM emergence ([GitHub](https://github.com/jmaczan/tiny-vllm)) is tangentially related but not a fix.
-- **NEW WATCHLIST: Rising LLM inference costs** — Gemini 3.5 Flash at 3x predecessor pricing signals a broader trend. Monitor whether vLLM self-hosting cost advantage widens. [The Batch](https://charonhub.deeplearning.ai/gemini-3-5-flash-pairs-smarts-with-speed/)
+*No new model releases, benchmark data, or ranking changes today. Rankings unchanged from 2026-05-29.*
 
 
 
