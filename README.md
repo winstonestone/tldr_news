@@ -1,84 +1,71 @@
-# AI News Daily Briefing — 2026-06-02
+# AI News Daily Briefing — 2026-06-03
 
-# AI Daily Briefing — 2026-06-02
+# AI Daily Briefing — June 3, 2026
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Mellum2: 12B MoE model from JetBrains** — A code-focused mixture-of-experts model. JetBrains is positioning this for IDE-integrated coding tasks. Open-weight. No trusted benchmark data yet. [Hugging Face Blog](https://huggingface.co/blog/JetBrains/mellum2-launch)
+- **Microsoft launches MAI-Thinking-1 and MAI-Code-1-Flash** — MAI-Thinking-1 is a 1T-parameter reasoning model (35B active, MoE) claiming preference over Sonnet 4.6 in blind human side-by-side evals; currently limited to "select early partners." MAI-Code-1-Flash is 137B params (5B active), purpose-built for GitHub Copilot, now rolling out to VS Code individual users. Both trained on "clean and commercially licensed data" without third-party distillation — though Simon Willison notes skepticism about what "appropriately licensed" means in practice. Closed models, no weights available. [Microsoft AI](https://microsoft.ai/news/building-a-hillclimbing-machine-launching-seven-new-mai-models/) | [Simon Willison](https://simonwillison.net/2026/Jun/2/microsofts-new-models/#atom-everything) | [Hacker News](https://microsoft.ai/news/introducingmai-code-1-flash/)
 
-- **NVIDIA Nemotron 550B scores 48 on Artificial Analysis Intelligence Index** — Reportedly the highest-scoring US open model. 550B params, open-weight. Worth watching for vLLM support given the size. [Towards AI](https://pub.towardsai.net/nvidias-550b-nemotron-embarrassed-every-us-open-model-and-it-shouldn-t-run-this-fast-5fa7376549e5)
+- **MiniMax M3 decodes 1M-token context 15.6x faster than M2.7** — Shanghai-based MiniMax shipped M3 on June 1. The headline number is decode throughput at long context. If pricing follows M2.7's pattern, this could be the cheapest frontier-class long-context model. Worth watching for benchmarks from trusted sources — none yet from LMSYS or Artificial Analysis. [Towards AI](https://pub.towardsai.net/minimax-m3-decodes-1m-tokens-15x-faster-and-it-shouldnt-be-this-cheap-5428f2476957?source=rss----98111c9905da---4)
 
----
+- **Holo3.1: fast local computer-use agents** — HuggingFace's HCompany releases Holo3.1, a model for autonomous computer use that runs locally. Open-weight. No trusted benchmark data yet, but relevant if you're building GUI automation agents. [Hugging Face Blog](https://huggingface.co/blog/Hcompany/holo31)
 
 ### 2. Framework & Tooling Updates
 
-- **AdaCodec: predictive visual coding cuts video MLLM token budgets by 7x** — Built on Qwen3-VL-8B, it encodes inter-frame changes as compact P-tokens instead of full RGB frames. At 32k tokens (1/7 budget), it beats the 224k baseline on all long-video benchmarks and drops time-to-first-token from 9.26s to 1.62s. Relevant if you serve video models via vLLM. [arXiv](https://arxiv.org/abs/2606.02569v1)
+- **vLLM deep-dive production guide published** — A 3-part Towards AI series covers model-level, serve-level, and engine-level LLM latency optimization with vLLM as the recommended "production default." Covers PagedAttention, chunked prefill, APC, speculative decoding, multi-LoRA, and quantization support (GPTQ, AWQ, FP8, INT4). Good reference if you're tuning P95/P99 latency. [Part 1](https://pub.towardsai.net/3-part-series-llm-latency-in-production-part-1-babc85a2128a) | [Part 2](https://pub.towardsai.net/part-2-serve-level-speed-system-design-that-stabilizes-p95-p99-61543d856588) | [Part 3](https://pub.towardsai.net/part-3-implementation-engine-level-choosing-the-runtime-that-gives-you-these-for-free-b0e9081205b0)
 
-- **SimSD: speculative decoding for diffusion language models** — Training-free, plug-and-play method achieving up to 7.46x throughput on SDAR-family dLLMs. If diffusion LLMs become a vLLM target, this is the acceleration method to watch. [arXiv](https://arxiv.org/abs/2606.02544v1)
-
-- **SubFit: submodule-level LLM compression** — Post-training compression at attention/FFN granularity (not full layers). At 25% sparsity retains 84.6% downstream accuracy vs 81.6% for best baselines. Delivers real inference speedup and KV-cache savings. Code available. [arXiv](https://arxiv.org/abs/2606.02559v1)
-
----
+- **GitHub Copilot App preview launched** — A standalone GitHub Copilot application (not just a VS Code extension). Likely tied to MAI-Code-1-Flash rollout. [GitHub](https://github.com/features/preview/github-app)
 
 ### 3. Infrastructure & Deployment
 
-- **OpenAI models and Codex now GA on AWS** — Enterprise teams can now access OpenAI frontier models through AWS procurement and environments. Reduces friction for shops already on AWS. [OpenAI Blog](https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws), [Hacker News (269 pts)](https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws/)
+- **NetKV: network-aware KV cache routing for disaggregated inference** — Reduces mean TTFT by up to 21.2% over round-robin in disaggregated setups by factoring network topology into decode instance selection. If you're running prefill/decode disaggregation at scale, this is a meaningful scheduling improvement. [arXiv](https://arxiv.org/abs/2606.03910v1)
 
-- **OpenAI breaks ground on 1GW Michigan data center (Stargate)** — Signals massive capacity expansion. Likely means sustained or lower API pricing long-term. [OpenAI Blog](https://openai.com/index/stargate-michigan-data-center)
-
-- **Alphabet announces $80B equity capital raise for AI infrastructure** — The largest AI infra raise yet. Expect continued GPU supply expansion and competitive cloud AI pricing. [Alphabet IR](https://abc.xyz/investor/news/news-details/2026/Alphabet-Announces-Proposed-80-Billion-Equity-Capital-Raise-to-Expand-AI-Infrastructure-and-Compute-2026-b0myAMewCa/default.aspx), [Hacker News (189 pts)](https://abc.xyz/investor/news/news-details/2026/Alphabet-Announces-Proposed-80-Billion-Equity-Capital-Raise-to-Expand-AI-Infrastructure-and-Compute-2026-b0myAMewCa/default.aspx)
-
-- **PEFT as persistent personal state (MinT framework)** — Paper argues PEFT adapters should be treated as persistent per-user state, not just cheap fine-tuning. MinT manages adapter identity, versioning, and serving residency for millions of adapted instances. Relevant if you serve many personalized model variants. [arXiv](https://arxiv.org/abs/2606.02437v1)
-
----
+- **Headroom: compress tool outputs before they reach the LLM** — Trending on GitHub (1,265 stars today). Library/proxy/MCP server that compresses logs, RAG chunks, and tool outputs by 60-95% fewer tokens. Directly useful if your agent pipelines are burning tokens on verbose tool output. [GitHub](https://github.com/chopratejas/headroom)
 
 ### 4. Industry Moves
 
-- **Anthropic confidentially files S-1 with the SEC** — IPO incoming. This is a major signal — Anthropic is going public. Expect increased scrutiny on revenue, costs, and competitive positioning. [Anthropic Blog](https://www.anthropic.com/news/confidential-draft-s1-sec), [The Economist/HN](https://www.economist.com/finance-and-economics/2026/06/01/can-the-stockmarket-swallow-anthropic-spacex-and-openai)
+- **Trump signs downsized AI executive order** — "Promoting Advanced Artificial Intelligence Innovation and Security" — scaled back after weeks of reversals. [Politico](https://www.politico.com/news/2026/06/02/trump-signs-downsized-ai-order-00946389)
 
-- **Florida sues OpenAI and Sam Altman over AI safety** — AG lawsuit alleging OpenAI put profit over safety. Regulatory risk signal for the industry. [Politico](https://www.politico.com/news/2026/06/01/openai-hit-with-florida-lawsuit-00944215)
+- **Anthropic expands Project Glasswing** — Details sparse in the announcement, but this is Anthropic's initiative around AI safety and societal benefit. [Anthropic](https://www.anthropic.com/news/expanding-project-glasswing)
 
-- **Groq's fundraising questioned** — Analysis piece questioning Groq's business model viability despite continued raises. Relevant if you're evaluating LPU-based inference providers. [Zach.be](https://www.zach.be/p/how-the-hell-is-groq-raising-more)
+- **Nathan Lambert departs Ai2** — Key figure behind OLMo open models is leaving. Reflective post on open-source AI impact and paths forward. Signals potential changes in Ai2's open model efforts. [Interconnects](https://www.interconnects.ai/p/farewell-ai2)
 
-- **Meta AI support bot used to hijack Instagram accounts** — Hackers simply asked Meta's AI chatbot to link attacker emails to target accounts, and it complied. A stark example of why you don't give AI agents one-shot access to critical account operations. [Simon Willison](https://simonwillison.net/2026/Jun/1/hackers-simply-asked-meta-ai/#atom-everything), [404 Media](https://www.404media.co/hackers-simply-asked-meta-ai-to-give-them-access-to-high-profile-instagram-accounts-it-worked/)
+- **AI outperforms law professors in Stanford Law study** — Frontier models beat legal academics on law school tasks. Relevant as another data point for professional-domain AI capabilities. [Stanford Law](https://law.stanford.edu/press/ai-outperforms-law-professors-in-stanford-law-study/)
 
----
+- **OpenAI ships Codex plugins for non-engineering roles** — Codex expanding beyond code to analysts, marketers, designers. API/pricing implications unclear. [OpenAI](https://openai.com/index/codex-for-every-role-tool-workflow)
 
 ### 5. Research Highlights
 
-- **Ghost Tool Calls: privacy leak in speculative agent tool use** — When agents speculatively issue tool calls to hide latency, external services see user intent before the agent commits. Post-hoc cleanup doesn't help — only issue-time suppression works. If you build tool-calling agents, this is a real design constraint. [arXiv](https://arxiv.org/abs/2606.02483v1)
+- **ACTS: Agentic Chain-of-Thought Steering** — A controller agent steers a frozen reasoner's CoT in real-time, adapting reasoning strategy to a token budget. Matches full-thinking accuracy with substantial token savings. Practical for controlling inference cost without retraining. [arXiv](https://arxiv.org/abs/2606.03965v1)
 
-- **RASER: selective escalation router for multi-hop QA** — A cheap router that decides whether single-shot RAG is enough or whether to escalate to iterative retrieval. Uses 41-49% of always-escalate tokens while matching F1. Directly useful if you run RAG pipelines. [arXiv](https://arxiv.org/abs/2606.02488v1)
+- **Imaginative Perception Tokens (IPT)** — Intermediate visual representations that help VLMs reason about unseen viewpoints. Outperforms textual CoT for spatial tasks, suggesting language is the wrong modality for spatial reasoning. Relevant if you're building vision-based agents. [arXiv](https://arxiv.org/abs/2606.03988v1)
 
-- **MCP-Persona: benchmark for personalized MCP tool use** — First benchmark testing agents on real personal apps (Reddit, Slack, Lark). SOTA agents struggle significantly with personalized tool contexts. Useful reference if you're building MCP integrations. [arXiv](https://arxiv.org/abs/2606.02470v1)
+- **q0: Hyper-Epoch Pretraining** — Turns multi-epoch budget into a population of diverse models via cyclic schedules and chain distillation. Achieves ~12.9x data efficiency. Matters if you're pretraining on limited domain data. [arXiv](https://arxiv.org/abs/2606.03938v1)
 
-- **SafeSteer: safety alignment with 100 samples, no general data** — Confines alignment to safety-critical tokens via activation steering. Achieves strong safety with <1% of the data previous methods need, minimal capability degradation. [arXiv](https://arxiv.org/abs/2606.02530v1)
-
-- **HLL: CAPTCHA benchmark exposes agent brittleness** — Frontier multimodal agents tested on interactive CAPTCHAs; best model hits only 39.6%. Shows current agents can't reliably substitute for humans in protected workflows. [arXiv](https://arxiv.org/abs/2606.02449v1)
-
----
+- **Quantifying Faithful Confidence in Reasoning Models** — Shows that long CoT traces don't actually improve calibration — reasoning models are still poorly calibrated in expressing confidence. Important if you rely on model uncertainty signals. [arXiv](https://arxiv.org/abs/2606.03969v1)
 
 ### 6. Technology Adoption
 
-- **Impeccable: design language for AI-generated UIs** — 485 GitHub stars in one day. A design system/language specifically for making AI agent outputs look better. Worth evaluating if you're building AI-powered interfaces. [GitHub](https://github.com/pbakaus/impeccable)
+- **Headroom (token compression)** — Worth evaluating immediately if you run agentic pipelines with verbose tool outputs. 60-95% token reduction with claimed answer preservation. Available as library, proxy, or MCP server — low integration cost. [GitHub](https://github.com/chopratejas/headroom)
 
-- **fff (fast file finder): file search for AI agents** — 135 stars/day. Rust-based, with bindings for Node.js and C. Purpose-built for agent workflows that need fast codebase search. Could complement Claude Code or Codex agent setups. [GitHub](https://github.com/dmtrKovalenko/fff)
+- **datasette-agent-micropython** — Simon Willison's new approach to sandboxing AI-generated Python code: MicroPython compiled to WASM, executed via wasmtime. GPT-5.5 hasn't broken out yet. If you need safe code execution in an agent pipeline, this is a cleaner approach than Docker for lightweight cases. [Simon Willison](https://simonwillison.net/2026/Jun/2/datasette-agent-micropython/#atom-everything)
 
-- **Stanford CS336: Language Modeling from Scratch** — Their Claude Code agent guidelines (417 HN points) are a useful reference for setting up agentic coding workflows in educational/team settings. [GitHub](https://github.com/stanford-cs336/assignment1-basics/blob/main/CLAUDE.md), [Course](https://cs336.stanford.edu/)
+- **Agent libOS** — Library-OS-inspired runtime for long-running LLM agents with process identity, capability controls, checkpoints, and audit. Early-stage but architecturally interesting if you're building persistent agents that need authorization and resumability. [arXiv](https://arxiv.org/abs/2606.03895v1)
 
-- **Combining Claude Code + Codex** — TDS article on using Claude Code for interactive terminal work and Codex for parallel background tasks. Practical workflow if you're already paying for both. [Towards Data Science](https://towardsdatascience.com/how-to-combining-claude-code-and-codex-for-max-coding-power/)
+### 7. Model Rankings Update
 
----
+No ranking changes today. MAI-Thinking-1 claims to beat Sonnet 4.6 in human evals, but the model isn't publicly available and has no trusted benchmark data yet. MiniMax M3 throughput claims are impressive but lack independent verification. Will update when LMSYS, Artificial Analysis, or Open LLM Leaderboard results appear.
 
 ### 8. Watchlist Updates
 
-- **NEW WATCHLIST: Anthropic S-1 / IPO timeline** — Confidential S-1 filed. Watch for public filing, pricing, and any commitments around API pricing stability post-IPO. [Anthropic Blog](https://www.anthropic.com/news/confidential-draft-s1-sec)
-
-- **NEW WATCHLIST: Meta AI support bot account takeover vulnerability** — Active exploitation reported. If you integrate Meta APIs or rely on Meta account security, monitor for a fix. [Simon Willison](https://simonwillison.net/2026/Jun/1/hackers-simply-asked-meta-ai/#atom-everything)
-
-- **NEW WATCHLIST: NVIDIA Nemotron 550B vLLM support** — 550B open-weight model with strong benchmarks. No vLLM compatibility confirmed yet — worth tracking. [Towards AI](https://pub.towardsai.net/nvidias-550b-nemotron-embarrassed-every-us-open-model-and-it-shouldn-t-run-this-fast-5fa7376549e5)
+- **NVIDIA Nemotron 550B vLLM support** — No new information today. Still watching.
+- **Anthropic S-1 / IPO timeline** — No new information beyond last week's filing. Project Glasswing expansion announced but unrelated to IPO timeline. [Anthropic](https://www.anthropic.com/news/expanding-project-glasswing)
+- **ChatGPT plugin supply-chain risk** — No new developments.
+- **NEW WATCHLIST: MAI-Thinking-1 general availability** — Currently limited to "select early partners." Watch for public API access and independent benchmarks.
+- **NEW WATCHLIST: MiniMax M3 independent benchmarks** — 15.6x decode speedup claimed; needs LMSYS/Artificial Analysis verification before ranking.
+- **NEW WATCHLIST: Nathan Lambert post-Ai2 plans** — His next move could signal where open-source model development is heading.
 
 
 
