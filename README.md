@@ -1,124 +1,160 @@
-# AI News Daily Briefing — 2026-06-22
+# AI News Daily Briefing — 2026-07-02
 
-# Daily AI Briefing — 2026-06-22
+# Daily AI Briefing — July 2, 2026
 
 ---
 
 ### 1. New Models & Benchmarks
 
-- **Apertus: Open foundation model for "Sovereign AI"** — Trending on Hacker News (378 points). Details on architecture and benchmarks are sparse; no results yet from trusted sources (LMSYS, Open LLM Leaderboard, Artificial Analysis). Worth watching but too early to evaluate. [Apertus](https://apertvs.ai/) | [HN Discussion](https://news.ycombinator.com/item?id=48608394)
+- **Claude Sonnet 5 released** — Anthropic's new mid-tier model with performance "close to Opus 4.8" at Sonnet-tier pricing ($3/$15 per M input/output tokens, introductory $2/$10 until Aug 31). 1M context window, 128K max output. Adaptive thinking on by default. **Caveat:** new tokenizer produces ~30% more tokens for the same text, effectively a stealth price increase. Sampling params (`temperature`, `top_p`, `top_k`) are no longer supported. Open-weight: No (API-only). [Anthropic Blog](https://www.anthropic.com/news/claude-sonnet-5) · [Simon Willison](https://simonwillison.net/2026/Jun/30/claude-sonnet-5/#atom-everything)
 
-- **"Minimal downside to switching to open models"** — Blog post arguing open-weight models have closed the gap enough for most production use cases. 224 points on HN with 181 comments. Timely given the Fable 5 access suspension (see Industry Moves). [Source](https://www.marble.onl/posts/cancel_claude.html)
+- **Fable 5 / Mythos 5 export controls lifted** — US Dept. of Commerce lifted export restrictions; Anthropic is restoring global access starting July 1. Anthropic also proposed an industry-wide jailbreak severity scoring framework with Amazon, Microsoft, and Google. If you lost access during the ban, your top-ranked agentic coding model is back. [Anthropic Blog](https://www.anthropic.com/news/redeploying-fable-5) · [Simon Willison](https://simonwillison.net/2026/Jun/30/anthropic/#atom-everything) · [Hacker News (936 pts)](https://twitter.com/AnthropicAI/status/2072106151890809341)
+
+- **Kimi K2.7 Code now available in GitHub Copilot** — Moonshot AI's coding-specialized model is generally available as a Copilot backend. Worth evaluating if you use Copilot and want to compare against Claude/GPT options. No independent benchmark data from trusted sources yet. [GitHub Blog](https://github.blog/changelog/2026-07-01-kimi-k2-7-is-now-available-in-github-copilot/) · [Hacker News (144 pts)](https://github.blog/changelog/2026-07-01-kimi-k2-7-is-now-available-in-github-copilot/)
+
+- **Nano Banana 2 Lite (Gemini 3.1 Flash Lite Image)** — Google's fastest/cheapest image generation model. Good for high-volume image tasks where cost matters more than quality. Still struggles with text spelling. [Google DeepMind Blog](https://deepmind.google/blog/start-building-with-nano-banana-2-lite-and-gemini-omni-flash/) · [Simon Willison](https://simonwillison.net/2026/Jun/30/nano-banana-2-lite/#atom-everything)
+
+- **Senior SWE-Bench launched** — New open-source benchmark from Snorkel that assesses coding agents as senior engineers (harder than standard SWE-Bench). Worth tracking as it could become a better signal for agentic coding quality. No model results from trusted sources cited yet. [Senior SWE-Bench](https://senior-swe-bench.snorkel.ai/) · [Hacker News (83 pts)](https://senior-swe-bench.snorkel.ai/)
+
+- **ScarfBench: Enterprise Java framework migration benchmark** — Benchmarks AI agents specifically on migrating enterprise Java codebases (e.g., Spring Boot upgrades). Niche but highly relevant if you maintain Java services. From IBM Research and Hugging Face. [Hugging Face Blog](https://huggingface.co/blog/ibm-research/scarfbench)
 
 ---
 
 ### 2. Framework & Tooling Updates
 
-- **sqlite-utils 4.0rc1** — Adds built-in database migrations (ported from sqlite-migrate) and nested transactions. Breaking changes from 3.x; Simon Willison is looking for testers before stable release. [Simon Willison](https://simonwillison.net/2026/Jun/21/sqlite-utils-40rc1/#atom-everything)
+- **OpenWiki: CLI for agent-generated codebase documentation** — From LangChain. Writes and maintains docs for your codebase using AI agents. Think auto-generated, source-cited wiki. Early-stage but interesting for teams struggling with stale docs. [GitHub](https://github.com/langchain-ai/openwiki) · [Hacker News (36 pts)](https://github.com/langchain-ai/openwiki)
 
-- **codebase-memory-mcp** — MCP server that indexes codebases into a persistent knowledge graph. Claims 158 languages, sub-ms queries, 99% fewer tokens. 1,032 GitHub stars today. Single static binary. [GitHub](https://github.com/DeusData/codebase-memory-mcp)
-
-- **Recall: Local project memory for Claude Code** — Stores and retrieves project-specific context locally. 113 HN points. Lightweight alternative to the trending "skills" pattern. [GitHub](https://github.com/raiyanyahya/recall)
-
-- **mattpocock/skills** — Claude Code skill files from Matt Pocock's `.claude` directory. 1,443 stars today. Practical examples of structuring agent instructions. [GitHub](https://github.com/mattpocock/skills)
+- **shot-scraper 1.10: Agent video demos** — Simon Willison's new `shot-scraper video` command lets coding agents record video demos of their work using Playwright. Practical for CI/CD demo generation and proving agent work actually functions. [Simon Willison](https://simonwillison.net/2026/Jun/30/shot-scraper-video/#atom-everything) · [GitHub](https://github.com/simonw/shot-scraper/releases/tag/1.10)
 
 ---
 
 ### 3. Infrastructure & Deployment
 
-- **UltraQuant: 4-bit KV caching for agentic workloads** — Directly relevant to vLLM users. Uses FP4 KV tensors with FP8 queries on AMD CDNA4 GPUs. Cuts P50 TTFT by 3.47x in cache-pressured rounds and raises throughput by 1.63x over the FP8 KV baseline in vLLM. Key design choices: asymmetric K/V treatment, Walsh-Hadamard rotation, block-scale variants. [arXiv](https://arxiv.org/abs/2606.20474v1)
+- **Asymmetric Quantization: 97% storage reduction for retrieval embeddings** — Mixedbread shows near-lossless retrieval quality with asymmetric quantization, cutting vector storage by 97%. If you're running a RAG pipeline with large embedding indices, this is directly applicable for cost reduction. [Mixedbread Blog](https://www.mixedbread.com/blog/asymmetric-quant) · [Hacker News (22 pts)](https://www.mixedbread.com/blog/asymmetric-quant)
 
-- **Execution-State Capsules (FlashRT)** — Graph-bound checkpoint/restore for on-device serving. Captures full execution state (KV, recurrent, convolution, MTP), not just KV cache. Sub-ms GPU-resident restore; 27x TTFT speedup over cold prefill at 16k tokens on RTX 5090. Targets low-latency, small-batch regime — complementary to, not a replacement for, high-throughput serving. [arXiv](https://arxiv.org/abs/2606.20537v1)
+- **Hybrid local-cloud LLM patterns** — Practical walkthrough of routing between local (Gemma 4) and cloud (GPT-5.4) models with structured outputs. Useful pattern if you want to minimize API costs while keeping a frontier fallback. [Towards Data Science](https://towardsdatascience.com/stop-choosing-between-local-and-cloud-llms-a-field-guide-to-hybrid-patterns/)
 
-- **Cloudflare temporary deployments** — `npx wrangler deploy --temporary` now deploys Workers without an account, live for 60 minutes. Useful for quick tool/agent endpoint prototyping. [Simon Willison](https://simonwillison.net/2026/Jun/21/temporary-cloudflare-accounts/#atom-everything)
+- **CubeSandbox from Tencent** — Lightweight sandboxing for AI agents. Designed for instant, concurrent execution environments. Potentially useful if you need isolated agent runtime without full Docker overhead. [GitHub](https://github.com/TencentCloud/CubeSandbox)
 
 ---
 
 ### 4. Industry Moves
 
-- **US government suspends access to Claude Fable 5 and Mythos 5** — Export control directive issued Jun 12. The announcement says "suspend all access." This is the top-ranked model across Agentic Coding, Chat, and Function Calling. Massive practical impact for developers relying on these models. [Anthropic Blog](https://www.anthropic.com/news/fable-mythos-access)
+- **Claude Code caught steganographically watermarking requests** — Claude Code embeds hidden markers in its prompts, likely for tracking/attribution. This is the top Hacker News story (2,387 pts). If you're using Claude Code in sensitive environments, read the analysis. [The Real Lo Dev](https://thereallo.dev/blog/claude-code-prompt-steganography) · [Hacker News (2387 pts)](https://thereallo.dev/blog/claude-code-prompt-steganography)
 
-- **Anthropic identity verification now required on Claude** — Trending on HN and Reddit. Users must verify identity to continue using Claude. [Anthropic Support](https://support.claude.com/en/articles/14328960-identity-verification-on-claude)
+- **Claude Science launched** — Anthropic's new AI workbench purpose-built for researchers, integrating common science tools and packages. Signals Anthropic's push into vertical-specific products beyond general chat/API. [Anthropic Blog](https://www.anthropic.com/news/claude-science-ai-workbench)
 
-- **Samsung deploys ChatGPT Enterprise + Codex company-wide** — One of OpenAI's largest enterprise rollouts. [OpenAI Blog](https://openai.com/index/samsung-electronics-chatgpt-codex-deployment)
+- **GLM-5.2 (753B, MIT license) from Z.ai** — Mentioned in a Towards AI analysis piece: reportedly scores 62.1 on SWE-Bench Pro (vs GPT-5.5's 58.6) and 74.4% on FrontierSWE, at $1.40/M input tokens. However, these are vendor-reported numbers, not independently verified by trusted sources. Worth watching but don't update rankings yet. [Towards AI](https://pub.towardsai.net/open-source-models-just-passed-the-good-enough-line-what-that-actually-changes-73fb3fa4f32d)
 
-- **Anthropic opens Seoul office** — New partnerships across the Korean AI ecosystem. [Anthropic Blog](https://www.anthropic.com/news/seoul-office-partnerships-korean-ai-ecosystem)
+- **Hugging Face + Cerebras bring Gemma 4 to real-time voice AI** — Hardware-accelerated voice pipeline using Gemma 4. Relevant if you're building voice interfaces with open-weight models. [Hugging Face Blog](https://huggingface.co/blog/cerebras-gemma4-voice-ai)
 
-- **TCS and DXC partner with Anthropic** — Both targeting regulated industries (banks, airlines). [TCS](https://www.anthropic.com/news/tcs-anthropic-partnership) | [DXC](https://www.anthropic.com/news/dxc-anthropic-alliance)
-
-- **Cursor acquired by Musk for $60B vs Windsurf by Google for $2.4B** — 25x price gap. Article argues the model inside barely matters; it's the IDE integration and user lock-in. [Towards AI](https://pub.towardsai.net/google-paid-2-4b-for-windsurf-why-did-musk-pay-60b-for-cursor-2cf67380c33b?source=rss----98111c9905da---4)
-
-- **ByteDance open-sources deer-flow** — Long-horizon "SuperAgent" harness with sandboxes, memory, tools, and sub-agents. 442 stars today. [GitHub](https://github.com/bytedance/deer-flow)
+- **OmniRoute: Free AI gateway** — Open-source gateway aggregating 231+ providers (50+ free) behind one endpoint. Connects to Claude Code, Codex, Cursor, Cline & Copilot. Claims 15-95% token savings via compression. Trending on GitHub (1,010 stars). Interesting for cost optimization but verify the compression quality claims yourself. [GitHub](https://github.com/diegosouzapw/OmniRoute)
 
 ---
 
 ### 5. Research Highlights
 
-- **LedgerAgent: Structured state for tool-calling agents** — Maintains task state in a separate ledger rather than implicit prompt context. Blocks policy-violating tool calls at inference time. Improves pass^k across four customer-service domains. **Why care:** If you build tool-calling agents, this is a clean pattern for preventing stale-state bugs. [arXiv](https://arxiv.org/abs/2606.20529v1)
+- **SkillOpt: Agent skills as trainable parameters** — Treats agent instruction files as optimizable parameters outside a frozen model. Best or tied-best across 52 evaluation cells on 6 benchmarks and 7 models. **Why care:** If you write agent prompts/skills, this is a principled way to optimize them without changing model weights. Skills transfer across model scales. [arXiv (forthcoming)](https://www.microsoft.com/en-us/research/blog/skillopt-agent-skills-as-trainable-parameters/) · [Microsoft Research](https://www.microsoft.com/en-us/research/blog/skillopt-agent-skills-as-trainable-parameters/)
 
-- **Multi-LCB: LiveCodeBench for 12 languages** — Extends the contamination-aware coding benchmark beyond Python. Finds evidence of Python overfitting and language-specific contamination in 24 evaluated LLMs. **Why care:** If you use LLMs for non-Python codegen, your model may be worse than benchmarks suggest. [arXiv](https://arxiv.org/abs/2606.20517v1)
+- **AutoMem: Memory management as a trainable skill for LLM agents** — File-system memory operations become first-class agent actions. A 32B open-weight model becomes competitive with Claude Opus 4.5 and Gemini 3.1 Pro on long-horizon games when memory alone is optimized. **Why care:** Memory is the bottleneck in long-running agents, and this shows 2-4x gains from better memory alone. [arXiv:2607.01224](https://arxiv.org/abs/2607.01224v1)
 
-- **Probe-and-Refine Tuning for AGENTS.md** — Iteratively improves repository guidance files using synthetic bug-fix probes. Qwen3.5-35B-A3B goes from 25.5% to 33.0% on SWE-bench Verified. Improvement comes from coverage (finding the right file), not patch quality. **Why care:** Your AGENTS.md files matter, and this is a method to optimize them automatically. [arXiv](https://arxiv.org/abs/2606.20512v1)
+- **Single-layer RL training matches full-parameter training** — Training just one middle transformer layer recovers most RL post-training gains. Consistent across Qwen3/2.5 families, 3 RL algorithms, math/code/agent tasks. **Why care:** Could dramatically reduce RL fine-tuning compute costs. [arXiv:2607.01232](https://arxiv.org/abs/2607.01232v1)
 
-- **Calibration Without Comprehension** — Fine-tuned LLMs for vulnerability detection reach only 52.1% accuracy (+2.1pp above chance) on kernel CVEs. Fine-tuning shifts thresholds without learning security reasoning. **Why care:** Don't trust LLM-based vulnerability scanners as your primary security tool. [arXiv](https://arxiv.org/abs/2606.20502v1)
+- **QuasiMoTTo: 25-47% fewer samples for same pass@k** — Uses quasi-Monte Carlo sampling instead of i.i.d. for inference-time compute scaling. Matches pass@k with 25-47% fewer samples; halves GRPO training steps. **Why care:** Direct cost savings on any best-of-N or majority-vote inference strategy. [arXiv:2607.01179](https://arxiv.org/abs/2607.01179v1)
 
-- **DiffusionGemma transparency analysis** — Maps interpretability of Google's diffusion-based LLM. Finds it's similarly monitorable to autoregressive Gemma 4 after mapping through an interpretable token bottleneck. Discovers non-chronological reasoning in diffusion models. [arXiv](https://arxiv.org/abs/2606.20560v1)
+- **Performance-optimization benchmarks are unreliable** — Audit of GSO, SWE-Perf, and SWE-fficiency shows most reference patches fail cross-machine replay. Rankings flip depending on scoring rules. **Why care:** Take code-optimization leaderboard scores with heavy skepticism. [arXiv:2607.01211](https://arxiv.org/abs/2607.01211v1)
+
+- **Prompt Regression framework** — Practical framework for detecting when small prompt changes silently break production behavior. **Why care:** If you ship prompts to production, you need regression testing. [Towards Data Science](https://towardsdatascience.com/prompt-engineering-fails-quietly-prompt-regression-is-why/)
 
 ---
 
 ### 6. Technology Adoption
 
-- **Cloudflare temporary Workers** — Zero-signup ephemeral deployments. Good for: prototyping agent tool endpoints, webhook receivers, quick demos. 60-minute TTL with optional claim. Low friction, worth adopting for throwaway infra. [Cloudflare Blog](https://blog.cloudflare.com/temporary-accounts/) | [Simon Willison](https://simonwillison.net/2026/Jun/21/temporary-cloudflare-accounts/#atom-everything)
+- **Claude Sonnet 5: Adopt for cost-conscious workloads replacing Opus 4.8** — If you're currently paying for Opus 4.8 and don't need the absolute ceiling, Sonnet 5 at ~60% of the effective price is the play. Watch out for the 30% tokenizer inflation. Test your specific workloads before migrating. [Anthropic Blog](https://www.anthropic.com/news/claude-sonnet-5) · [Simon Willison](https://simonwillison.net/2026/Jun/30/claude-sonnet-5/#atom-everything)
 
-- **cognee: Open-source AI memory platform** — Knowledge graph engine for giving agents persistent memory across sessions. Self-hosted. 347 stars today. If you're building multi-session agents and need structured long-term memory, evaluate this against rolling your own. [GitHub](https://github.com/topoteretes/cognee)
+- **Strix: Open-source AI penetration testing** — Automated vulnerability discovery and fixing. 1,211 GitHub stars in one day. If you run security audits, worth evaluating as a complement to manual testing. Too new to trust for production-critical security, but promising. [GitHub](https://github.com/usestrix/strix)
 
-- **OpenMontage** — Open-source agentic video production: 12 pipelines, 52 tools, 500+ agent skills. 987 stars today. Niche but notable if you need programmatic video. [GitHub](https://github.com/calesthio/OpenMontage)
+- **herdr: Agent multiplexer in your terminal** — Run multiple AI agents from one terminal interface. 609 stars trending. Useful if you juggle multiple agent tools (Claude Code, Codex, etc.) and want a unified workflow. [GitHub](https://github.com/ogulcancelik/herdr)
+
+- **Context Engineering for RAG** — Practical decomposition of RAG inputs into four typed categories. Good mental model if you're designing RAG pipelines. [Towards Data Science](https://towardsdatascience.com/context-engineering-for-rag-the-four-typed-inputs-behind-every-rag-answer/)
 
 ---
 
 ### 7. Model Rankings Update
 
-No new trusted benchmark data (LMSYS, Open LLM Leaderboard, Artificial Analysis) in today's articles. Rankings unchanged on capability.
+Sonnet 5 enters as a strong mid-tier option. Fable 5's return restores its availability. No trusted independent benchmarks for GLM-5.2 or Kimi K2.7 Code yet, so they don't affect rankings.
 
-**However:** The Fable 5 / Mythos 5 access suspension is a critical availability issue. If the suspension holds, the #1 model for Agentic Coding, Chat/Conversation, and Function Calling is currently inaccessible. Developers should plan fallbacks to Claude Opus 4.8 (#2 across these tasks) or DeepSeek V4 Pro (#3-4) immediately.
+```ranking
+TASK: Agentic Coding
+| Rank | Model | Reason | Weights | Source |
+1. Claude Fable 5 / Mythos 5 — 80.0% SWE-Bench Pro; now restored globally after export ban lifted | closed (API-only) | Anthropic Blog
+2. Claude Opus 4.8 — Previous best, still strong; $25/M output | closed (API-only) | Anthropic Blog
+3. Claude Sonnet 5 — Near-Opus performance at ~60% effective cost; new tokenizer noted | closed (API-only) | Anthropic Blog, Simon Willison
+4. DeepSeek V4 Pro — Matches GPT-5.2 median at 17x less cost | open-weight | r/LocalLLaMA FoodTruck Bench
+5. GPT-5.2 — Strong agentic median but $14/M output pricing | closed (API-only) | r/LocalLLaMA FoodTruck Bench
+```
+
+```ranking
+TASK: Chat / Conversation
+| Rank | Model | Reason | Weights | Source |
+1. Claude Fable 5 / Mythos 5 — Top benchmark suite performance; 1M context; global access restored | closed (API-only) | Anthropic Blog, Simon Willison
+2. Claude Opus 4.8 — Excellent quality, half the price of Fable | closed (API-only) | Anthropic Blog
+3. Claude Sonnet 5 — Near-Opus chat quality at Sonnet pricing; adaptive thinking default | closed (API-only) | Anthropic Blog, Simon Willison
+4. GPT-5.5 — Fast, strong general chat | closed (API-only) | r/LocalLLaMA community
+5. DeepSeek V4 Pro — Frontier quality at fraction of cost | open-weight | r/LocalLLaMA FoodTruck Bench
+```
+
+```ranking
+TASK: Function Calling
+| Rank | Model | Reason | Weights | Source |
+1. Claude Fable 5 / Mythos 5 — Top tool-calling; global access restored | closed (API-only) | Anthropic Blog
+2. Claude Opus 4.8 — Clean multi-step tool calling, mid-message system entries | closed (API-only) | Anthropic Blog
+3. Claude Sonnet 5 — Same tool/platform features as Sonnet 4.6 at near-Opus capability | closed (API-only) | Anthropic Blog
+4. GPT-5.2 — Reliable structured output, wide ecosystem | closed (API-only) | r/LocalLLaMA community
+5. DeepSeek V4 Pro — Strong tool use at fraction of cost | open-weight | r/LocalLLaMA
+```
+
+*Note: Sonnet 5 enters at #3 for Agentic Coding, Chat, and Function Calling based on Anthropic's stated near-Opus performance. Qwen 3.6 27B drops off these lists but remains the best local/open-weight option under 30B. Rankings for Summarisation, Image Captioning, and RAG/Retrieval unchanged — no new trusted data today.*
 
 ---
 
 ### 8. Watchlist Updates
 
-- **NEW WATCHLIST: Fable 5 / Mythos 5 access suspension** — US export control directive suspends all access as of Jun 12. No timeline for restoration. This is the highest-impact item: the #1-ranked model across three tracked tasks is offline. Monitor [Anthropic's announcement page](https://www.anthropic.com/news/fable-mythos-access) for updates.
+- **RESOLVED: Fable 5 / Mythos 5 access suspension** — US Department of Commerce has lifted export controls. Anthropic is restoring global access as of July 1, 2026. [Anthropic Blog](https://www.anthropic.com/news/redeploying-fable-5) · [Anthropic Twitter](https://twitter.com/AnthropicAI/status/2072106151890809341)
 
-- **NEW WATCHLIST: Claude identity verification requirement** — Anthropic now requires ID verification for Claude access. Unclear scope and timeline for enforcement. Could affect API access or just consumer product. [Source](https://support.claude.com/en/articles/14328960-identity-verification-on-claude)
+- **NEW WATCHLIST: Claude Code steganographic watermarking** — Claude Code is embedding hidden markers in requests. Unclear what data is encoded or how it's used. Monitor for Anthropic's official response and implications for enterprise/sensitive-code usage. [The Real Lo Dev](https://thereallo.dev/blog/claude-code-prompt-steganography)
 
-- **NEW WATCHLIST: Apertus open foundation model** — "Sovereign AI" positioning suggests EU/government-focused deployment. No benchmarks yet from trusted sources. Watch for LMSYS Arena or Open LLM Leaderboard submissions. [Source](https://apertvs.ai/)
+- **NEW WATCHLIST: Claude Sonnet 5 tokenizer change** — 30% more tokens for the same text means higher effective costs than sticker price. Monitor whether Anthropic adjusts pricing or if third-party tools update token estimators. [Simon Willison](https://simonwillison.net/2026/Jun/30/claude-sonnet-5/#atom-everything)
 
-- **NEW WATCHLIST: UltraQuant vLLM FP4 KV caching** — Paper demonstrates 4-bit KV caching with vLLM on AMD GPUs. Watch for upstream vLLM integration and NVIDIA CUDA support. [arXiv](https://arxiv.org/abs/2606.20474v1)
+- **NEW WATCHLIST: GLM-5.2 independent benchmark verification** — Vendor-reported SWE-Bench Pro 62.1 would be significant for open-weight. Waiting on LMSYS/Artificial Analysis confirmation before adjusting rankings. [Towards AI](https://pub.towardsai.net/open-source-models-just-passed-the-good-enough-line-what-that-actually-changes-73fb3fa4f32d)
+
+- **NEW WATCHLIST: Kimi K2.7 Code in Copilot** — Now GA in GitHub Copilot. Need independent coding benchmarks to assess ranking impact. [GitHub Blog](https://github.blog/changelog/2026-07-01-kimi-k2-7-is-now-available-in-github-copilot/)
 
 
 
 ---
 *Current Model Rankings*
 
-Agentic Coding
-_Updated: 2026-06-10_
-1. *Claude Fable 5 / Mythos 5* — 80.0% SWE-Bench Pro, major leap over Opus 4.8 | _closed (API-only)_ | Anthropic Blog, Towards AI
-2. *Claude Opus 4.8* — Previous best, now superseded; still strong at lower price | _closed (API-only)_ | Anthropic Blog
-3. *DeepSeek V4 Pro* — Matches GPT-5.2 median at 17x less cost | _open-weight_ | r/LocalLLaMA FoodTruck Bench
-4. *GPT-5.2* — Strong agentic median but $14/M output pricing | _closed (API-only)_ | r/LocalLLaMA FoodTruck Bench
-5. *Qwen 3.6 27B* — Best local option, finds bugs missed by frontier models | _open-weight_ | r/LocalLLaMA user reports
+*Agentic Coding* (UPDATED)
+_Updated: 2026-07-02_
+1. *Claude Fable 5 / Mythos 5* — 80.0% SWE-Bench Pro; now restored globally after export ban lifted | _closed (API-only)_ | Anthropic Blog
+2. *Claude Opus 4.8* — Previous best, still strong; $25/M output | _closed (API-only)_ | Anthropic Blog
+3. *Claude Sonnet 5* — Near-Opus performance at ~60% effective cost; new tokenizer noted | _closed (API-only)_ | Anthropic Blog, Simon Willison
+4. *DeepSeek V4 Pro* — Matches GPT-5.2 median at 17x less cost | _open-weight_ | r/LocalLLaMA FoodTruck Bench
+5. *GPT-5.2* — Strong agentic median but $14/M output pricing | _closed (API-only)_ | r/LocalLLaMA FoodTruck Bench
 
-Chat / Conversation
-_Updated: 2026-06-10_
-1. *Claude Fable 5 / Mythos 5* — "Remarkable leap on pretty much every relevant benchmark"; 1M context | _closed (API-only)_ | Anthropic Blog, Simon Willison
-2. *Claude Opus 4.8* — Still excellent, half the price of Fable | _closed (API-only)_ | Anthropic Blog
-3. *GPT-5.5* — Fast, strong general chat | _closed (API-only)_ | r/LocalLLaMA community
-4. *DeepSeek V4 Pro* — Frontier quality at fraction of cost | _open-weight_ | r/LocalLLaMA FoodTruck Bench
-5. *Qwen 3.6 27B* — Strong reasoning, multimodal, runs on single 48GB GPU | _open-weight_ | r/LocalLLaMA
+*Chat / Conversation* (UPDATED)
+_Updated: 2026-07-02_
+1. *Claude Fable 5 / Mythos 5* — Top benchmark suite performance; 1M context; global access restored | _closed (API-only)_ | Anthropic Blog, Simon Willison
+2. *Claude Opus 4.8* — Excellent quality, half the price of Fable | _closed (API-only)_ | Anthropic Blog
+3. *Claude Sonnet 5* — Near-Opus chat quality at Sonnet pricing; adaptive thinking default | _closed (API-only)_ | Anthropic Blog, Simon Willison
+4. *GPT-5.5* — Fast, strong general chat | _closed (API-only)_ | r/LocalLLaMA community
+5. *DeepSeek V4 Pro* — Frontier quality at fraction of cost | _open-weight_ | r/LocalLLaMA FoodTruck Bench
 
-Function Calling
-_Updated: 2026-06-10_
-1. *Claude Fable 5 / Mythos 5* — Extends Opus 4.8's tool-calling improvements at higher capability level | _closed (API-only)_ | Anthropic Blog
+*Function Calling* (UPDATED)
+_Updated: 2026-07-02_
+1. *Claude Fable 5 / Mythos 5* — Top tool-calling; global access restored | _closed (API-only)_ | Anthropic Blog
 2. *Claude Opus 4.8* — Clean multi-step tool calling, mid-message system entries | _closed (API-only)_ | Anthropic Blog
-3. *GPT-5.2* — Reliable structured output, wide ecosystem | _closed (API-only)_ | r/LocalLLaMA community
-4. *DeepSeek V4 Pro* — Strong tool use at fraction of cost | _open-weight_ | r/LocalLLaMA
-5. *Qwen 3.6 27B* — Best local option for function calling | _open-weight_ | r/LocalLLaMA
+3. *Claude Sonnet 5* — Same tool/platform features as Sonnet 4.6 at near-Opus capability | _closed (API-only)_ | Anthropic Blog
+4. *GPT-5.2* — Reliable structured output, wide ecosystem | _closed (API-only)_ | r/LocalLLaMA community
+5. *DeepSeek V4 Pro* — Strong tool use at fraction of cost | _open-weight_ | r/LocalLLaMA
